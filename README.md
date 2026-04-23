@@ -40,3 +40,6 @@ have real photography. To swap in a real photo:
 
 See `images/README.md` for the full list of filenames, aspect ratios,
 and crop-behaviour controls.
+
+
+<!-- Trigger redeploy -->
