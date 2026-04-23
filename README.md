@@ -43,3 +43,5 @@ and crop-behaviour controls.
 
 
 <!-- Trigger redeploy -->
+
+<!-- Force redeploy after reconnect -->
