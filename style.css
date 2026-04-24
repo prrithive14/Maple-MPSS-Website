@@ -521,6 +521,53 @@ section { position: relative; }
   display: block;
 }
 
+/* 2x2 grid of images — used where a single shot can't carry
+   the scope of the work (e.g. showing a full line, not one machine). */
+.block-image-grid {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.block-image-grid .grid-cell {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--ivory-warm);
+  position: relative;
+}
+
+.block-image-grid .grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.block-image-grid .grid-cell .cell-num {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ivory);
+  background: rgba(27, 42, 59, 0.72);
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .block-image-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .model-node-image {
   width: 100%;
   aspect-ratio: 1 / 1;
