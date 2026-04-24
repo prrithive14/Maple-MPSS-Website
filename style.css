@@ -771,32 +771,33 @@ section { position: relative; }
 }
 
 @media (min-width: 800px) {
-  .services { grid-template-columns: repeat(3, 1fr); }
-  .services.services-two { grid-template-columns: repeat(2, 1fr); }
+  .services { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .services.services-two { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 }
 
+/* Card framing — each service card sits in its own soft-tinted frame,
+   giving clear visual separation between parallel offerings.
+   Replaces the previous hairline-divider approach. */
 .service-card {
   padding: 2.5rem 2rem 2.25rem;
-  border-right: 1px solid var(--rule);
+  background: var(--ivory-warm);
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  background: var(--ivory);
-  transition: background 280ms ease;
+  transition: background 280ms ease, border-color 280ms ease, transform 280ms ease;
 }
-
-.service-card:last-child { border-right: 0; }
 
 @media (max-width: 800px) {
-  .service-card {
-    border-right: 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .service-card:last-child { border-bottom: 0; }
+  .services, .services.services-two { gap: 1.25rem; }
 }
 
-.service-card:hover { background: var(--ivory-warm); }
+.service-card:hover {
+  background: #F5EFDF;
+  border-color: var(--rule);
+}
 
 .service-card .num {
   font-family: var(--mono);
@@ -859,17 +860,23 @@ section { position: relative; }
 .why-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.25rem;
   margin-top: 3rem;
 }
 
 @media (min-width: 700px) {
-  .why-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem 3.5rem; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 }
 
+/* Card framing — each point/option sits in its own soft-tinted frame.
+   Clearer separation between parallel items than the previous single
+   top-border approach, which let items blur together at a glance. */
 .why-item {
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--ink);
+  padding: 1.75rem 1.65rem 1.85rem;
+  background: var(--ivory-warm);
+  border: 1px solid var(--rule-soft);
+  border-top: 2px solid var(--page-tint);
+  border-radius: 3px;
   position: relative;
 }
 
