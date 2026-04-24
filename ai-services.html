@@ -14,16 +14,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;450;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260424-3" />
+  <link rel="stylesheet" href="style.css?v=20260424-4" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
   <link rel="shortcut icon" href="images/favicon.ico" />
 
   <!-- =======================================================
-       INTERACTIVE DEMO STYLES — inline to guarantee loading
-       All demos share this base. Each demo has a unique ID
-       so styles don't leak. Color palette matches the site.
+       INTERACTIVE DEMO STYLES — v2
+       Expanded to support: view toggles, sub-tabs, animated
+       status dots, reorder flags, sourcing decisions,
+       parts-ID upload mock, TOC/page counter.
        ======================================================= -->
   <style>
     /* Shared demo frame */
@@ -43,6 +44,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       padding: 10px 16px;
       background: #F9F6EF;
       border-bottom: 1px solid #D8D0BF;
@@ -51,15 +53,39 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #6B7684;
+      flex-wrap: wrap;
     }
     .demo-topbar .lights { display: flex; gap: 6px; }
     .demo-topbar .light { width: 8px; height: 8px; border-radius: 50%; background: #D8D0BF; }
     .demo-topbar .light.green { background: #6B8E6F; }
-    .demo-topbar .path { color: #3A4A5E; letter-spacing: 0.04em; text-transform: none; font-size: 11px; }
+    .demo-topbar .path { color: #3A4A5E; letter-spacing: 0.04em; text-transform: none; font-size: 11px; flex: 1; min-width: 0; }
     .demo-topbar .right { color: #6B2737; }
 
+    /* View toggle (used in CRM) */
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid #D8D0BF;
+      background: #FFFFFF;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .view-toggle button {
+      padding: 4px 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 0;
+      color: #6B7684;
+      cursor: pointer;
+      transition: background 160ms, color 160ms;
+    }
+    .view-toggle button:hover { color: #1B2A3B; background: #F2EDE1; }
+    .view-toggle button.active { background: #1B2A3B; color: #F9F6EF; }
+
     /* ==== DEMO 1 — CRM ==== */
-    #demo-crm .crm-layout { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 420px; }
+    #demo-crm .crm-layout { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 440px; }
     @media (max-width: 700px) { #demo-crm .crm-layout { grid-template-columns: 1fr; } }
 
     #demo-crm .crm-left { border-right: 1px solid #E8E2D1; display: flex; flex-direction: column; }
@@ -137,6 +163,7 @@
       align-items: baseline;
       padding-bottom: 10px;
       border-bottom: 1px solid #E8E2D1;
+      gap: 10px;
     }
     #demo-crm .crm-detail-head h4 {
       font-family: "Fraunces", serif;
@@ -144,14 +171,64 @@
       font-weight: 450;
       margin: 0;
       letter-spacing: -0.01em;
+      flex: 1;
     }
-    #demo-crm .crm-detail-head .rev {
+    #demo-crm .rev-picker {
+      position: relative;
+    }
+    #demo-crm .rev-btn {
       font-family: "IBM Plex Mono", monospace;
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: #6B2737;
+      background: transparent;
+      border: 1px solid #D8D0BF;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: background 140ms;
     }
+    #demo-crm .rev-btn:hover { background: #F2EDE1; }
+    #demo-crm .rev-btn::after { content: " ▾"; font-size: 9px; }
+    #demo-crm .rev-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 4px;
+      min-width: 210px;
+      background: #FFFFFF;
+      border: 1px solid #D8D0BF;
+      box-shadow: 0 4px 14px rgba(27,42,59,0.08);
+      z-index: 10;
+    }
+    #demo-crm .rev-menu.open { display: block; animation: menuFade 180ms ease; }
+    @keyframes menuFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+    #demo-crm .rev-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 9px 12px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid #F2EDE1;
+      font-family: inherit;
+      font-size: 11.5px;
+      color: #1B2A3B;
+      cursor: pointer;
+      line-height: 1.35;
+      transition: background 140ms;
+    }
+    #demo-crm .rev-menu button:last-child { border-bottom: 0; }
+    #demo-crm .rev-menu button:hover { background: #F9F6EF; }
+    #demo-crm .rev-menu button .meta {
+      display: block;
+      margin-top: 2px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      color: #6B7684;
+    }
+
     #demo-crm .crm-specs { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 12px; }
     #demo-crm .crm-specs dt {
       font-family: "IBM Plex Mono", monospace;
@@ -164,7 +241,7 @@
     #demo-crm .crm-specs dd { color: #3A4A5E; margin: 0; }
     #demo-crm .crm-drawing {
       margin-top: 6px;
-      height: 110px;
+      height: 90px;
       border: 1px dashed #D8D0BF;
       background:
         repeating-linear-gradient(45deg, transparent 0, transparent 8px, #F9F6EF 8px, #F9F6EF 9px);
@@ -189,16 +266,140 @@
       color: #1B2A3B;
       cursor: pointer;
       transition: background 160ms, color 160ms;
+      position: relative;
+      overflow: hidden;
     }
     #demo-crm .crm-btn:hover { background: #1B2A3B; color: #F9F6EF; }
     #demo-crm .crm-btn.primary { background: #6B2737; color: #F9F6EF; border-color: #6B2737; }
     #demo-crm .crm-btn.primary:hover { background: #541D2C; }
+    #demo-crm .crm-btn.syncing {
+      color: transparent !important;
+      pointer-events: none;
+    }
+    #demo-crm .crm-btn.syncing::after {
+      content: "Syncing to ERP...";
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #F9F6EF;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
     #demo-crm .crm-btn.approved {
       background: #6B8E6F !important; color: #F9F6EF !important; border-color: #6B8E6F !important;
       pointer-events: none;
     }
+    #demo-crm .crm-btn.approved::after { display: none; }
 
-    /* ==== DEMO 2 — WORKFLOW DASHBOARD ==== */
+    /* Integration status strip (bottom of CRM frame) */
+    #demo-crm .integ-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 16px;
+      background: #F9F6EF;
+      border-top: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6B7684;
+      flex-wrap: wrap;
+    }
+    #demo-crm .integ-strip .label { color: #6B7684; }
+    #demo-crm .integ-strip .nodes { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    #demo-crm .integ-node { display: inline-flex; align-items: center; gap: 6px; color: #3A4A5E; }
+    #demo-crm .integ-node .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #6B8E6F;
+      box-shadow: 0 0 0 0 rgba(107,142,111,0.5);
+    }
+    #demo-crm .integ-node.syncing .dot {
+      animation: integPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes integPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(107,142,111,0.5); }
+      50% { box-shadow: 0 0 0 5px rgba(107,142,111,0); }
+    }
+    #demo-crm .integ-arrow { color: #D8D0BF; }
+
+    /* Customer portal view overlay */
+    #demo-crm .portal-view { display: none; padding: 0; background: #FDFCF8; min-height: 440px; }
+    #demo-crm .portal-view.active { display: block; animation: fadeSwap 220ms ease; }
+    #demo-crm .crm-layout.hidden { display: none; }
+    @keyframes fadeSwap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    #demo-crm .portal-head {
+      padding: 18px 22px 12px;
+      border-bottom: 1px solid #E8E2D1;
+      background: #F9F6EF;
+    }
+    #demo-crm .portal-head h4 {
+      font-family: "Fraunces", serif;
+      font-size: 18px;
+      font-weight: 450;
+      margin: 0 0 4px;
+      letter-spacing: -0.01em;
+    }
+    #demo-crm .portal-head .customer {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+    #demo-crm .portal-list { padding: 8px 0; }
+    #demo-crm .portal-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 22px;
+      border-bottom: 1px solid #F2EDE1;
+      transition: background 140ms;
+    }
+    #demo-crm .portal-item:hover { background: #F9F6EF; }
+    #demo-crm .portal-item .pn {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #6B2737;
+      letter-spacing: 0.04em;
+    }
+    #demo-crm .portal-item .pn .rev {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 1px 5px;
+      background: #F2EDE1;
+      color: #6B7684;
+      font-size: 9px;
+    }
+    #demo-crm .portal-item .desc { font-size: 12.5px; color: #1B2A3B; line-height: 1.3; }
+    #demo-crm .portal-item .price {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: #1B2A3B;
+      text-align: right;
+    }
+    #demo-crm .portal-item .reorder {
+      padding: 6px 12px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: #6B2737;
+      color: #F9F6EF;
+      border: 0;
+      cursor: pointer;
+      transition: background 160ms;
+    }
+    #demo-crm .portal-item .reorder:hover { background: #541D2C; }
+    #demo-crm .portal-item .reorder.done {
+      background: #6B8E6F !important;
+      pointer-events: none;
+    }
+
+    /* ==== DEMO 2 — WORKFLOW ==== */
     #demo-workflow .wf-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
     #demo-workflow .wf-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     @media (max-width: 700px) { #demo-workflow .wf-kpis { grid-template-columns: 1fr; } }
@@ -207,6 +408,7 @@
       border: 1px solid #E8E2D1;
       background: #F9F6EF;
       transition: border-color 200ms, transform 200ms;
+      position: relative;
     }
     #demo-workflow .wf-kpi:hover { border-color: #6B2737; transform: translateY(-1px); }
     #demo-workflow .wf-kpi .label {
@@ -224,7 +426,9 @@
       color: #1B2A3B;
       line-height: 1;
       letter-spacing: -0.01em;
+      transition: color 180ms;
     }
+    #demo-workflow .wf-kpi .value.bump { color: #6B8E6F; }
     #demo-workflow .wf-kpi .value .unit { font-size: 13px; color: #6B7684; margin-left: 4px; }
     #demo-workflow .wf-kpi .delta {
       margin-top: 4px;
@@ -234,10 +438,40 @@
     }
     #demo-workflow .wf-kpi .delta.down { color: #6B2737; }
 
+    /* Sub-tabs for intake triage vs parts-id */
+    #demo-workflow .wf-subtabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #demo-workflow .wf-subtab {
+      padding: 10px 14px;
+      background: transparent;
+      border: 0;
+      color: #6B7684;
+      cursor: pointer;
+      transition: color 160ms, border-bottom 160ms;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+    }
+    #demo-workflow .wf-subtab:hover { color: #1B2A3B; }
+    #demo-workflow .wf-subtab.active { color: #6B2737; border-bottom-color: #6B2737; }
+
+    #demo-workflow .wf-pane { display: none; }
+    #demo-workflow .wf-pane.active { display: block; animation: fadeSwap 220ms ease; }
+
     #demo-workflow .wf-feed-head {
       display: flex; justify-content: space-between; align-items: baseline;
       padding: 2px 2px 8px;
-      border-bottom: 1px solid #E8E2D1;
+      border-bottom: 1px solid #F2EDE1;
+      margin-top: 10px;
     }
     #demo-workflow .wf-feed-head h5 {
       font-family: "IBM Plex Sans", sans-serif;
@@ -269,7 +503,12 @@
       align-items: center;
       padding: 10px 4px;
       border-bottom: 1px solid #F2EDE1;
+      transition: background 140ms;
     }
+    #demo-workflow .wf-item.new {
+      animation: wfSlideIn 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    @keyframes wfSlideIn { from { opacity: 0; transform: translateY(-6px); background: #F2EDE1; } to { opacity: 1; transform: none; } }
     #demo-workflow .wf-item .time {
       font-family: "IBM Plex Mono", monospace;
       font-size: 10.5px;
@@ -300,8 +539,156 @@
     #demo-workflow .wf-pill.review { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
     #demo-workflow .wf-pill.approved { border-color: #6B8E6F; color: #4E6B52; background: #EEF4EF; }
 
+    /* Parts-ID sub-pane */
+    #demo-workflow .wf-partsid {
+      padding: 14px 4px 4px;
+    }
+    #demo-workflow .wf-upload {
+      border: 2px dashed #D8D0BF;
+      background: #FDFCF8;
+      padding: 22px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 180ms, background 180ms;
+    }
+    #demo-workflow .wf-upload:hover { border-color: #6B2737; background: #F9F6EF; }
+    #demo-workflow .wf-upload.processing { border-color: #6B2737; background: #FDFCF8; cursor: default; }
+    #demo-workflow .wf-upload .icon {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 22px;
+      color: #6B2737;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    #demo-workflow .wf-upload .prompt {
+      font-size: 12.5px;
+      color: #1B2A3B;
+    }
+    #demo-workflow .wf-upload .prompt strong { color: #6B2737; }
+    #demo-workflow .wf-upload .sub {
+      display: block;
+      margin-top: 4px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: #6B7684;
+    }
+    #demo-workflow .wf-thinking {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #F9F6EF;
+      border: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #3A4A5E;
+      line-height: 1.6;
+    }
+    #demo-workflow .wf-thinking.show { display: block; }
+    #demo-workflow .wf-thinking .step { opacity: 0.4; transition: opacity 220ms, color 220ms; }
+    #demo-workflow .wf-thinking .step.active { opacity: 1; color: #6B2737; }
+    #demo-workflow .wf-thinking .step.done { opacity: 1; color: #4E6B52; }
+    #demo-workflow .wf-thinking .step.done::before { content: "✓ "; }
+    #demo-workflow .wf-thinking .step.active::before { content: "› "; }
+    #demo-workflow .wf-thinking .step::before { content: "  "; }
+
+    #demo-workflow .wf-matches {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid #E8E2D1;
+    }
+    #demo-workflow .wf-matches.show { display: block; animation: fadeSwap 280ms ease; }
+    #demo-workflow .wf-match {
+      display: grid;
+      grid-template-columns: 56px 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #F2EDE1;
+      background: #FFFFFF;
+    }
+    #demo-workflow .wf-match:last-child { border-bottom: 0; }
+    #demo-workflow .wf-match .thumb {
+      width: 44px; height: 44px;
+      background:
+        linear-gradient(135deg, #D8D0BF 0%, #E8E2D1 50%, #D8D0BF 100%);
+      border: 1px solid #D8D0BF;
+    }
+    #demo-workflow .wf-match .info {
+      font-size: 12px; line-height: 1.35;
+    }
+    #demo-workflow .wf-match .info .pn {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #6B2737;
+      margin-right: 6px;
+    }
+    #demo-workflow .wf-match .conf {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4E6B52;
+      padding: 2px 8px;
+      background: #EEF4EF;
+      border: 1px solid #6B8E6F;
+    }
+    #demo-workflow .wf-match .conf.mid { color: #9B6825; background: #FBF4E7; border-color: #C48A3A; }
+    #demo-workflow .wf-match .conf.low { color: #6B7684; background: #F9F6EF; border-color: #D8D0BF; }
+    #demo-workflow .wf-match .sel {
+      padding: 4px 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid #1B2A3B;
+      color: #1B2A3B;
+      cursor: pointer;
+      transition: background 140ms, color 140ms;
+    }
+    #demo-workflow .wf-match .sel:hover { background: #1B2A3B; color: #F9F6EF; }
+    #demo-workflow .wf-match .sel.picked { background: #6B2737; color: #F9F6EF; border-color: #6B2737; pointer-events: none; }
+
     /* ==== DEMO 3 — SUPPLIER SCORECARD ==== */
     #demo-supply .sc-body { padding: 0; }
+
+    #demo-supply .sc-subtabs {
+      display: flex;
+      border-bottom: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #demo-supply .sc-subtab {
+      padding: 11px 16px;
+      background: transparent;
+      border: 0;
+      color: #6B7684;
+      cursor: pointer;
+      transition: color 160ms, background 160ms;
+      border-right: 1px solid #E8E2D1;
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+    }
+    #demo-supply .sc-subtab:hover { color: #1B2A3B; background: #F9F6EF; }
+    #demo-supply .sc-subtab.active { color: #6B2737; background: #FFFFFF; box-shadow: inset 0 -2px 0 #6B2737; }
+    #demo-supply .sc-subtab .cnt {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 5px;
+      font-size: 9px;
+      background: #E8E2D1;
+      color: #3A4A5E;
+    }
+    #demo-supply .sc-subtab.active .cnt { background: #6B2737; color: #F9F6EF; }
+
+    #demo-supply .sc-pane { display: none; }
+    #demo-supply .sc-pane.active { display: block; animation: fadeSwap 220ms ease; }
+
     #demo-supply .sc-head {
       display: grid;
       grid-template-columns: 1.6fr 1fr 1fr 1fr auto;
@@ -387,7 +774,7 @@
       border-bottom: 1px solid #F2EDE1;
     }
     #demo-supply .sc-detail.open {
-      max-height: 180px;
+      max-height: 260px;
       padding: 14px 18px 16px;
     }
     #demo-supply .sc-detail-grid {
@@ -405,8 +792,101 @@
       margin-bottom: 4px;
     }
     #demo-supply .sc-detail-grid .note { font-size: 12px; color: #3A4A5E; line-height: 1.45; }
+    #demo-supply .sc-landed {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #E8E2D1;
+      display: flex; gap: 14px; flex-wrap: wrap;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      color: #3A4A5E;
+    }
+    #demo-supply .sc-landed span { color: #6B7684; margin-right: 4px; }
 
-    /* ==== DEMO 4 — AUDIT DOCUMENT ==== */
+    /* Reorder flags pane */
+    #demo-supply .flag-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #F2EDE1;
+      transition: background 140ms;
+    }
+    #demo-supply .flag-row:hover { background: #F9F6EF; }
+    #demo-supply .flag-row .sku {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #6B2737;
+      letter-spacing: 0.03em;
+    }
+    #demo-supply .flag-row .desc { font-size: 12.5px; color: #1B2A3B; }
+    #demo-supply .flag-row .desc .note { display: block; font-size: 11px; color: #6B7684; margin-top: 2px; }
+    #demo-supply .flag-row .issue {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+    }
+    #demo-supply .flag-row .issue.over { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
+    #demo-supply .flag-row .issue.under { border-color: #6B2737; color: #6B2737; background: #F7EBED; }
+    #demo-supply .flag-row .act {
+      padding: 6px 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid #1B2A3B;
+      color: #1B2A3B;
+      cursor: pointer;
+      transition: background 160ms, color 160ms;
+    }
+    #demo-supply .flag-row .act:hover { background: #1B2A3B; color: #F9F6EF; }
+    #demo-supply .flag-row .act.done { background: #6B8E6F; border-color: #6B8E6F; color: #F9F6EF; pointer-events: none; }
+
+    /* Sourcing decisions pane */
+    #demo-supply .dec-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid #F2EDE1;
+    }
+    #demo-supply .dec-row .dec-type {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    #demo-supply .dec-row .dec-type.cons { border-color: #6B8E6F; color: #4E6B52; background: #EEF4EF; }
+    #demo-supply .dec-row .dec-type.dual { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
+    #demo-supply .dec-row .dec-type.reshore { border-color: #6B2737; color: #6B2737; background: #F7EBED; }
+    #demo-supply .dec-row .dec-body { font-size: 12.5px; color: #1B2A3B; line-height: 1.4; }
+    #demo-supply .dec-row .dec-body .rationale { display: block; color: #6B7684; font-size: 11.5px; margin-top: 3px; }
+    #demo-supply .dec-row .dec-impact {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      color: #1B2A3B;
+      text-align: right;
+      white-space: nowrap;
+    }
+    #demo-supply .dec-row .dec-impact .label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B7684;
+      margin-bottom: 1px;
+    }
+
+    /* ==== DEMO 4 — AUDIT ==== */
     #demo-audit .au-layout {
       display: grid; grid-template-columns: 200px 1fr;
     }
@@ -451,6 +931,40 @@
     }
     #demo-audit .au-tab.active .tab-count { color: #6B2737; }
 
+    /* TOC / progress indicator */
+    #demo-audit .au-toc {
+      margin-top: auto;
+      padding: 14px 18px 0;
+      border-top: 1px solid #E8E2D1;
+    }
+    @media (max-width: 700px) { #demo-audit .au-toc { display: none; } }
+    #demo-audit .au-toc .toc-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B7684;
+      margin-bottom: 8px;
+    }
+    #demo-audit .au-toc .toc-track {
+      height: 3px;
+      background: #E8E2D1;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    #demo-audit .au-toc .toc-fill {
+      height: 100%;
+      background: #6B2737;
+      transition: width 340ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    #demo-audit .au-toc .toc-meta {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      color: #6B7684;
+      letter-spacing: 0.04em;
+    }
+
     #demo-audit .au-main { padding: 22px 26px; }
     #demo-audit .au-doc-meta {
       display: flex; justify-content: space-between; gap: 16px;
@@ -463,6 +977,13 @@
       color: #6B7684;
     }
     #demo-audit .au-doc-meta .client { color: #6B2737; }
+    #demo-audit .au-doc-meta .pagecount {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    #demo-audit .au-doc-meta .pagecount .dot {
+      width: 5px; height: 5px; border-radius: 50%; background: #6B8E6F;
+      animation: wfPulse 1.8s ease-in-out infinite;
+    }
     #demo-audit .au-pane { display: none; padding-top: 14px; }
     #demo-audit .au-pane.active { display: block; animation: auFade 240ms ease; }
     @keyframes auFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
@@ -515,7 +1036,9 @@
     @media (prefers-reduced-motion: reduce) {
       #demo-supply .sc-bar > span { transition: none; }
       #demo-audit .au-pane.active { animation: none; }
-      #demo-workflow .wf-feed-head .live-dot::before { animation: none; }
+      #demo-workflow .wf-feed-head .live-dot::before,
+      #demo-crm .integ-node.syncing .dot,
+      #demo-audit .au-doc-meta .pagecount .dot { animation: none; }
     }
   </style>
 </head>
@@ -623,26 +1146,75 @@
         <div class="demo-frame" id="demo-crm" role="region" aria-label="Interactive CRM demo">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
-            <span class="path">quote-to-order · active quotes</span>
-            <span class="right">MPSS · CRM</span>
+            <span class="path" id="crm-path">quote-to-order · active quotes</span>
+            <span class="view-toggle" role="tablist" aria-label="View mode">
+              <button class="active" data-view="internal" role="tab" aria-selected="true">Internal CRM</button>
+              <button data-view="portal" role="tab" aria-selected="false">Customer Portal</button>
+            </span>
           </div>
-          <div class="crm-layout">
+
+          <!-- INTERNAL VIEW -->
+          <div class="crm-layout" id="crm-internal">
             <div class="crm-left">
               <div class="crm-tabs" role="tablist">
                 <button class="crm-tab active" data-tab="active" role="tab" aria-selected="true">Active <span class="count">4</span></button>
                 <button class="crm-tab" data-tab="pending" role="tab" aria-selected="false">Pending <span class="count">2</span></button>
                 <button class="crm-tab" data-tab="won" role="tab" aria-selected="false">Won <span class="count">7</span></button>
               </div>
-              <div class="crm-rows" id="crm-rows">
-                <!-- populated by JS -->
+              <div class="crm-rows" id="crm-rows"><!-- JS --></div>
+            </div>
+            <div class="crm-right" id="crm-detail"><!-- JS --></div>
+          </div>
+
+          <!-- CUSTOMER PORTAL VIEW -->
+          <div class="portal-view" id="crm-portal">
+            <div class="portal-head">
+              <h4>Your approved parts catalog</h4>
+              <span class="customer">Signed in · Packaging OEM · Mississauga</span>
+            </div>
+            <div class="portal-list">
+              <div class="portal-item">
+                <span class="pn">BMBD-13 <span class="rev">Rev C</span></span>
+                <span class="desc">Stainless spindle, 316 · keyed end</span>
+                <span class="price">CAD 210.50 / ea</span>
+                <button class="reorder">Reorder</button>
+              </div>
+              <div class="portal-item">
+                <span class="pn">SF-6-304 <span class="rev">Rev B</span></span>
+                <span class="desc">Stainless flange · weld-neck · 6"</span>
+                <span class="price">CAD 255.00 / ea</span>
+                <button class="reorder">Reorder</button>
+              </div>
+              <div class="portal-item">
+                <span class="pn">UHMW-C12 <span class="rev">Rev A</span></span>
+                <span class="desc">UHMW wear strip · food-grade</span>
+                <span class="price">CAD 48.20 / ea</span>
+                <button class="reorder">Reorder</button>
+              </div>
+              <div class="portal-item">
+                <span class="pn">CAB-17 <span class="rev">Rev A</span></span>
+                <span class="desc">Cast aluminum bracket · A356-T6</span>
+                <span class="price">CAD 81.30 / ea</span>
+                <button class="reorder">Reorder</button>
               </div>
             </div>
-            <div class="crm-right" id="crm-detail">
-              <!-- populated by JS -->
+          </div>
+
+          <!-- INTEGRATION STATUS STRIP -->
+          <div class="integ-strip">
+            <span class="label">Connected systems</span>
+            <div class="nodes">
+              <span class="integ-node"><span class="dot"></span> Accounting</span>
+              <span class="integ-arrow">→</span>
+              <span class="integ-node" id="integ-crm"><span class="dot"></span> CRM</span>
+              <span class="integ-arrow">→</span>
+              <span class="integ-node"><span class="dot"></span> Shipping</span>
+              <span class="integ-arrow">→</span>
+              <span class="integ-node"><span class="dot"></span> Shop floor</span>
             </div>
           </div>
         </div>
-        <span class="block-image-caption">Fig. B1 — Quote-to-order CRM · click a row to load the quote</span>
+        <span class="block-image-caption">Fig. B1 — Quote-to-order CRM · toggle Internal / Customer Portal at top right · click a row, switch revision, approve</span>
       </div>
     </div>
 
@@ -679,32 +1251,72 @@
             <div class="wf-kpis">
               <div class="wf-kpi">
                 <div class="label">Intake today</div>
-                <div class="value"><span data-target="47">0</span></div>
+                <div class="value"><span data-target="47" data-key="intake">0</span></div>
                 <div class="delta">+12% vs yesterday</div>
               </div>
               <div class="wf-kpi">
                 <div class="label">Avg triage time</div>
-                <div class="value"><span data-target="8">0</span><span class="unit">min</span></div>
+                <div class="value"><span data-target="8" data-key="triage">0</span><span class="unit">min</span></div>
                 <div class="delta">−3 min vs last week</div>
               </div>
               <div class="wf-kpi">
                 <div class="label">Quotes awaiting review</div>
-                <div class="value"><span data-target="6">0</span></div>
+                <div class="value"><span data-target="6" data-key="review">0</span></div>
                 <div class="delta down">+2 vs yesterday</div>
               </div>
             </div>
-            <div>
+
+            <div class="wf-subtabs" role="tablist">
+              <button class="wf-subtab active" data-pane="triage" role="tab" aria-selected="true">Intake triage</button>
+              <button class="wf-subtab" data-pane="partsid" role="tab" aria-selected="false">Parts identification</button>
+            </div>
+
+            <div class="wf-pane active" data-pane="triage">
               <div class="wf-feed-head">
                 <h5>Live intake feed</h5>
                 <span class="live-dot">Live</span>
               </div>
-              <div class="wf-feed" id="wf-feed">
-                <!-- populated by JS; click pills to advance status -->
+              <div class="wf-feed" id="wf-feed"><!-- JS --></div>
+            </div>
+
+            <div class="wf-pane" data-pane="partsid">
+              <div class="wf-partsid">
+                <div class="wf-upload" id="wf-upload" role="button" tabindex="0">
+                  <div class="icon">⎙</div>
+                  <div class="prompt"><strong>Upload a part photo</strong> · we'll match it against your catalog</div>
+                  <span class="sub">JPG, PNG, or STEP · demo only</span>
+                </div>
+                <div class="wf-thinking" id="wf-thinking">
+                  <div class="step" data-step="1">Extracting visual features</div>
+                  <div class="step" data-step="2">Running embedding lookup against catalog · 4,218 parts</div>
+                  <div class="step" data-step="3">Ranking candidates by geometry + material signature</div>
+                </div>
+                <div class="wf-matches" id="wf-matches">
+                  <div class="wf-match">
+                    <div class="thumb"></div>
+                    <div class="info"><span class="pn">BMBD-13</span>Stainless spindle, 316 · Rev C · 40 in stock</div>
+                    <span class="conf">94% match</span>
+                    <button class="sel" data-pick="1">Select</button>
+                  </div>
+                  <div class="wf-match">
+                    <div class="thumb"></div>
+                    <div class="info"><span class="pn">BMBD-12</span>Stainless spindle, 304 · Rev B · legacy SKU</div>
+                    <span class="conf mid">72% match</span>
+                    <button class="sel" data-pick="2">Select</button>
+                  </div>
+                  <div class="wf-match">
+                    <div class="thumb"></div>
+                    <div class="info"><span class="pn">BMBD-9</span>Stainless spindle · deprecated · superseded by BMBD-13</div>
+                    <span class="conf low">48% match</span>
+                    <button class="sel" data-pick="3">Select</button>
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
-        <span class="block-image-caption">Fig. B2 — Operations dashboard · click a status pill to advance it</span>
+        <span class="block-image-caption">Fig. B2 — Operations dashboard · live KPIs, advance status pills, or switch to parts-ID to match a photo against the catalog</span>
       </div>
     </div>
 
@@ -730,27 +1342,81 @@
           <li>Sourcing decision support — where to consolidate, where to dual-source, where to re-shore.</li>
         </ul>
 
-        <!-- INTERACTIVE SUPPLIER SCORECARD -->
+        <!-- INTERACTIVE SUPPLY CHAIN -->
         <div class="demo-frame" id="demo-supply" role="region" aria-label="Supplier scorecard">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
-            <span class="path">supply chain · supplier scorecard · Q2</span>
+            <span class="path">supply chain · Q2 review</span>
             <span class="right">MPSS · SCM</span>
           </div>
-          <div class="sc-body">
-            <div class="sc-head">
-              <span>Supplier</span>
-              <span class="sortable sorted" data-sort="otd">On-time</span>
-              <span class="sortable" data-sort="qual">Quality</span>
-              <span class="sortable" data-sort="price">Price drift</span>
-              <span>Status</span>
+          <div class="sc-subtabs" role="tablist">
+            <button class="sc-subtab active" data-pane="perf" role="tab" aria-selected="true">Performance <span class="cnt">4</span></button>
+            <button class="sc-subtab" data-pane="flags" role="tab" aria-selected="false">Reorder flags <span class="cnt">4</span></button>
+            <button class="sc-subtab" data-pane="decisions" role="tab" aria-selected="false">Sourcing decisions <span class="cnt">3</span></button>
+          </div>
+
+          <!-- PERFORMANCE PANE -->
+          <div class="sc-pane active" data-pane="perf">
+            <div class="sc-body">
+              <div class="sc-head">
+                <span>Supplier</span>
+                <span class="sortable sorted" data-sort="otd">On-time</span>
+                <span class="sortable" data-sort="qual">Quality</span>
+                <span class="sortable" data-sort="price">Price drift</span>
+                <span>Status</span>
+              </div>
+              <div id="sc-list"><!-- JS --></div>
             </div>
-            <div id="sc-list">
-              <!-- populated by JS -->
+          </div>
+
+          <!-- REORDER FLAGS PANE -->
+          <div class="sc-pane" data-pane="flags">
+            <div class="flag-row">
+              <span class="sku">SF-6-304</span>
+              <span class="desc">304 stainless weld-neck flange · 6"<span class="note">Demand +42% over trailing 12 weeks · below single lead-time cover</span></span>
+              <span class="issue under">Under-stocked</span>
+              <button class="act">Raise min</button>
+            </div>
+            <div class="flag-row">
+              <span class="sku">UHMW-C12</span>
+              <span class="desc">UHMW wear strip · food-grade<span class="note">9 months of cover on hand · $14K working capital tied up</span></span>
+              <span class="issue over">Over-stocked</span>
+              <button class="act">Cap reorder</button>
+            </div>
+            <div class="flag-row">
+              <span class="sku">BMBD-13</span>
+              <span class="desc">Stainless spindle, 316 · Rev C<span class="note">Demand stable · safety stock currently aligned</span></span>
+              <span class="issue over">Over by 2wk</span>
+              <button class="act">Trim min</button>
+            </div>
+            <div class="flag-row">
+              <span class="sku">CAB-17</span>
+              <span class="desc">Cast aluminum bracket · A356-T6<span class="note">Two late shipments from LakeAlloys raised exposure · single-source</span></span>
+              <span class="issue under">Exposure flag</span>
+              <button class="act">Review source</button>
+            </div>
+          </div>
+
+          <!-- SOURCING DECISIONS PANE -->
+          <div class="sc-pane" data-pane="decisions">
+            <div class="dec-row">
+              <span class="dec-type cons">Consolidate</span>
+              <span class="dec-body">Shift 304/316 stainless bar stock from two suppliers to Hensall Metals<span class="rationale">Hensall holds 96% on-time + 98% quality · volume concentration earns 4% price break at committed annual spend</span></span>
+              <span class="dec-impact"><span class="label">Est. impact</span>−$52K / yr</span>
+            </div>
+            <div class="dec-row">
+              <span class="dec-type dual">Dual-source</span>
+              <span class="dec-body">Qualify Chennai Precision as secondary for BMBD-13 family<span class="rationale">LakeAlloys at 68% on-time creates schedule risk · qualified alternate onboarding 60% complete</span></span>
+              <span class="dec-impact"><span class="label">Est. impact</span>Risk −2 tier</span>
+            </div>
+            <div class="dec-row">
+              <span class="dec-type reshore">Re-shore</span>
+              <span class="dec-body">Move Alloy 625 bar from EU sourcing to North American mill<span class="rationale">EUR/CAD drift + 9-week lead time · NA mill quoted 12-day lead + currency-matched pricing</span></span>
+              <span class="dec-impact"><span class="label">Est. impact</span>Lead −6 wk</span>
             </div>
           </div>
         </div>
-        <span class="block-image-caption">Fig. B3 — Supplier scorecard · click a row to expand, click a column to re-sort</span>
+        <span class="block-image-caption">Fig. B3 — Supplier scorecard · switch between Performance, Reorder flags, and Sourcing decisions · expand any supplier row for landed-cost detail</span>
       </div>
     </div>
 
@@ -777,7 +1443,7 @@
           <li>Deliverable: a written document covering findings, ranked recommendations, a watch list, and scoping notes for follow-on work.</li>
         </ul>
 
-        <!-- INTERACTIVE AUDIT DOCUMENT -->
+        <!-- INTERACTIVE AUDIT DEMO -->
         <div class="demo-frame" id="demo-audit" role="region" aria-label="Audit deliverable preview">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
@@ -786,15 +1452,20 @@
           </div>
           <div class="au-layout">
             <div class="au-side" role="tablist">
-              <button class="au-tab active" data-tab="findings" role="tab" aria-selected="true">Findings <span class="tab-count">4</span></button>
-              <button class="au-tab" data-tab="recommend" role="tab" aria-selected="false">Recommendations <span class="tab-count">3</span></button>
-              <button class="au-tab" data-tab="watch" role="tab" aria-selected="false">Watch list <span class="tab-count">2</span></button>
-              <button class="au-tab" data-tab="scoping" role="tab" aria-selected="false">Scoping notes</button>
+              <button class="au-tab active" data-tab="findings" data-idx="1" role="tab" aria-selected="true">Findings <span class="tab-count">4</span></button>
+              <button class="au-tab" data-tab="recommend" data-idx="2" role="tab" aria-selected="false">Recommendations <span class="tab-count">3</span></button>
+              <button class="au-tab" data-tab="watch" data-idx="3" role="tab" aria-selected="false">Watch list <span class="tab-count">2</span></button>
+              <button class="au-tab" data-tab="scoping" data-idx="4" role="tab" aria-selected="false">Scoping notes</button>
+              <div class="au-toc">
+                <div class="toc-label">Document progress</div>
+                <div class="toc-track"><div class="toc-fill" id="toc-fill" style="width: 25%;"></div></div>
+                <div class="toc-meta"><span id="toc-counter">Section 1 of 4</span> · 7 pp</div>
+              </div>
             </div>
             <div class="au-main">
               <div class="au-doc-meta">
                 <span class="client">Client · packaging OEM · Ontario</span>
-                <span>Five-day audit · Apr 2026</span>
+                <span class="pagecount"><span class="dot"></span> <span id="au-page">p. 1–2</span> · five-day audit · Apr 2026</span>
               </div>
 
               <div class="au-pane active" data-pane="findings">
@@ -899,7 +1570,7 @@
             </div>
           </div>
         </div>
-        <span class="block-image-caption">Fig. B4 — Audit deliverable · click a tab to switch sections</span>
+        <span class="block-image-caption">Fig. B4 — Audit deliverable · each tab advances the document; progress indicator tracks position in the 7-page report</span>
 
         <p style="margin-top: 1.75rem;">
           Audits run on a fixed scope and a fixed timeline. A brief
@@ -1033,7 +1704,7 @@
 </footer>
 
 <script>
-  /* ---------- nav toggle (existing) ---------- */
+  /* nav toggle */
   (function () {
     var toggle = document.querySelector('.nav-toggle');
     var menu = document.getElementById('nav-links');
@@ -1053,26 +1724,56 @@
   })();
 
   /* =========================================================
-     DEMO 1 — CRM
+     DEMO 1 — CRM (expanded)
+     Adds: view toggle (Internal/Portal), revision menu, ERP sync anim,
+     integration status pulse on approve, portal reorder buttons.
      ========================================================= */
   (function () {
     var quotes = {
       active: [
-        { id: 'Q-4412', part: 'BMBD-13', title: 'Stainless spindle, 316', sub: 'Qty 40 · Rev C', amount: 'CAD 8,420', status: 'Awaiting approval', customer: 'Packaging OEM · Mississauga', mat: '316 stainless · bar stock', lead: '3 weeks', margin: '34.2%', rev: 'Rev C' },
-        { id: 'Q-4410', part: 'PFD-220', title: 'Polished forging die cavity', sub: 'Qty 2 · Rev A', amount: 'CAD 14,800', status: 'In quote', customer: 'Automotive Tier 2 · Windsor', mat: 'Tool steel · H13', lead: '5 weeks', margin: '28.5%', rev: 'Rev A' },
-        { id: 'Q-4408', part: 'SF-6-304', title: 'Stainless flanges, weld-neck', sub: 'Qty 24 · Rev B', amount: 'CAD 6,120', status: 'Drafting', customer: 'Food processor · Guelph', mat: '304 stainless', lead: '2 weeks', margin: '31.0%', rev: 'Rev B' },
-        { id: 'Q-4405', part: 'CAB-17', title: 'Cast aluminum bracket', sub: 'Qty 120 · Rev A', amount: 'CAD 9,760', status: 'In quote', customer: 'System integrator · Hamilton', mat: 'Aluminum A356-T6', lead: '3 weeks', margin: '29.8%', rev: 'Rev A' }
+        { id: 'Q-4412', part: 'BMBD-13', title: 'Stainless spindle, 316', sub: 'Qty 40 · Rev C', amount: 'CAD 8,420', status: 'Awaiting approval', customer: 'Packaging OEM · Mississauga', mat: '316 stainless · bar stock', lead: '3 weeks', margin: '34.2%', rev: 'Rev C',
+          revisions: [
+            { id: 'C', note: 'Current · keyed end per customer spec', date: 'Apr 18 · 2026' },
+            { id: 'B', note: 'Tolerance tightened on bearing seat', date: 'Feb 02 · 2026' },
+            { id: 'A', note: 'Initial release', date: 'Oct 14 · 2025' }
+          ]
+        },
+        { id: 'Q-4410', part: 'PFD-220', title: 'Polished forging die cavity', sub: 'Qty 2 · Rev A', amount: 'CAD 14,800', status: 'In quote', customer: 'Automotive Tier 2 · Windsor', mat: 'Tool steel · H13', lead: '5 weeks', margin: '28.5%', rev: 'Rev A',
+          revisions: [ { id: 'A', note: 'Initial release', date: 'Apr 02 · 2026' } ]
+        },
+        { id: 'Q-4408', part: 'SF-6-304', title: 'Stainless flanges, weld-neck', sub: 'Qty 24 · Rev B', amount: 'CAD 6,120', status: 'Drafting', customer: 'Food processor · Guelph', mat: '304 stainless', lead: '2 weeks', margin: '31.0%', rev: 'Rev B',
+          revisions: [
+            { id: 'B', note: 'Hole pattern updated to ANSI B16.5', date: 'Mar 22 · 2026' },
+            { id: 'A', note: 'Initial release', date: 'Jan 11 · 2026' }
+          ]
+        },
+        { id: 'Q-4405', part: 'CAB-17', title: 'Cast aluminum bracket', sub: 'Qty 120 · Rev A', amount: 'CAD 9,760', status: 'In quote', customer: 'System integrator · Hamilton', mat: 'Aluminum A356-T6', lead: '3 weeks', margin: '29.8%', rev: 'Rev A',
+          revisions: [ { id: 'A', note: 'Initial release', date: 'Mar 29 · 2026' } ]
+        }
       ],
       pending: [
-        { id: 'Q-4398', part: 'TH-PLT-9', title: 'Manifold plate with inserts', sub: 'Qty 6 · Rev D', amount: 'CAD 11,240', status: 'Approval pending', customer: 'Packaging OEM · Burlington', mat: '17-4 PH stainless', lead: '4 weeks', margin: '33.1%', rev: 'Rev D' },
-        { id: 'Q-4391', part: 'HB-88', title: 'Flanged hub assembly', sub: 'Qty 8 · Rev B', amount: 'CAD 7,980', status: 'Approval pending', customer: 'Distributor · Toronto', mat: 'Cast iron + machined', lead: '4 weeks', margin: '30.4%', rev: 'Rev B' }
+        { id: 'Q-4398', part: 'TH-PLT-9', title: 'Manifold plate with inserts', sub: 'Qty 6 · Rev D', amount: 'CAD 11,240', status: 'Approval pending', customer: 'Packaging OEM · Burlington', mat: '17-4 PH stainless', lead: '4 weeks', margin: '33.1%', rev: 'Rev D',
+          revisions: [
+            { id: 'D', note: 'Insert count raised to 8', date: 'Apr 08 · 2026' },
+            { id: 'C', note: 'Material upgrade to 17-4 PH', date: 'Feb 18 · 2026' }
+          ]
+        },
+        { id: 'Q-4391', part: 'HB-88', title: 'Flanged hub assembly', sub: 'Qty 8 · Rev B', amount: 'CAD 7,980', status: 'Approval pending', customer: 'Distributor · Toronto', mat: 'Cast iron + machined', lead: '4 weeks', margin: '30.4%', rev: 'Rev B',
+          revisions: [
+            { id: 'B', note: 'Bolt circle opened for wider mount', date: 'Mar 30 · 2026' },
+            { id: 'A', note: 'Initial release', date: 'Dec 05 · 2025' }
+          ]
+        }
       ],
       won: [
-        { id: 'Q-4377', part: 'BMBD-13', title: 'Stainless spindle (repeat)', sub: 'Qty 60 · Rev C', amount: 'CAD 12,480', status: 'Won · in production', customer: 'Packaging OEM · Mississauga', mat: '316 stainless', lead: '3 weeks', margin: '34.2%', rev: 'Rev C' }
+        { id: 'Q-4377', part: 'BMBD-13', title: 'Stainless spindle (repeat)', sub: 'Qty 60 · Rev C', amount: 'CAD 12,480', status: 'Won · in production', customer: 'Packaging OEM · Mississauga', mat: '316 stainless', lead: '3 weeks', margin: '34.2%', rev: 'Rev C',
+          revisions: [ { id: 'C', note: 'Production lot · Rev C', date: 'Apr 04 · 2026' } ]
+        }
       ]
     };
     var rowsEl = document.getElementById('crm-rows');
     var detailEl = document.getElementById('crm-detail');
+    var pathEl = document.getElementById('crm-path');
     var currentTab = 'active';
     var selectedIdx = 0;
 
@@ -1097,10 +1798,16 @@
     function renderDetail() {
       var q = quotes[currentTab][selectedIdx];
       if (!q) { detailEl.innerHTML = ''; return; }
+      var revsHtml = q.revisions.map(function (r) {
+        return '<button data-rev="' + r.id + '">Rev ' + r.id + ' — ' + r.note + '<span class="meta">' + r.date + '</span></button>';
+      }).join('');
       detailEl.innerHTML =
         '<div class="crm-detail-head">' +
           '<h4>' + q.title + '</h4>' +
-          '<span class="rev">' + q.rev + '</span>' +
+          '<span class="rev-picker">' +
+            '<button class="rev-btn" id="rev-btn">' + q.rev + '</button>' +
+            '<div class="rev-menu" id="rev-menu">' + revsHtml + '</div>' +
+          '</span>' +
         '</div>' +
         '<dl class="crm-specs">' +
           '<dt>Customer</dt><dd>' + q.customer + '</dd>' +
@@ -1115,11 +1822,41 @@
           '<button class="crm-btn">Request revision</button>' +
           '<button class="crm-btn primary" id="crm-approve">Approve</button>' +
         '</div>';
+
+      // rev dropdown
+      var revBtn = document.getElementById('rev-btn');
+      var revMenu = document.getElementById('rev-menu');
+      revBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        revMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', function () {
+        if (revMenu) revMenu.classList.remove('open');
+      });
+      revMenu.querySelectorAll('button').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var newRev = 'Rev ' + b.getAttribute('data-rev');
+          q.rev = newRev;
+          revMenu.classList.remove('open');
+          renderDetail();
+        });
+      });
+
+      // approve button with sync animation
       var approveBtn = document.getElementById('crm-approve');
       if (approveBtn) {
         approveBtn.addEventListener('click', function () {
-          approveBtn.classList.add('approved');
-          approveBtn.textContent = 'Approved ✓';
+          approveBtn.classList.add('syncing');
+          // pulse CRM node
+          var node = document.getElementById('integ-crm');
+          if (node) node.classList.add('syncing');
+          setTimeout(function () {
+            approveBtn.classList.remove('syncing');
+            approveBtn.classList.add('approved');
+            approveBtn.textContent = 'Approved ✓';
+            if (node) node.classList.remove('syncing');
+          }, 1400);
         });
       }
     }
@@ -1133,6 +1870,36 @@
         currentTab = t.getAttribute('data-tab');
         selectedIdx = 0;
         renderRows(); renderDetail();
+        if (pathEl) pathEl.textContent = 'quote-to-order · ' + currentTab + ' quotes';
+      });
+    });
+
+    // View toggle: internal / portal
+    var viewBtns = document.querySelectorAll('#demo-crm .view-toggle button');
+    var internal = document.getElementById('crm-internal');
+    var portal = document.getElementById('crm-portal');
+    viewBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        viewBtns.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        b.classList.add('active'); b.setAttribute('aria-selected', 'true');
+        var view = b.getAttribute('data-view');
+        if (view === 'portal') {
+          internal.classList.add('hidden');
+          portal.classList.add('active');
+          if (pathEl) pathEl.textContent = 'customer portal · signed in';
+        } else {
+          internal.classList.remove('hidden');
+          portal.classList.remove('active');
+          if (pathEl) pathEl.textContent = 'quote-to-order · ' + currentTab + ' quotes';
+        }
+      });
+    });
+
+    // portal reorder buttons
+    document.querySelectorAll('#demo-crm .portal-item .reorder').forEach(function (b) {
+      b.addEventListener('click', function () {
+        b.classList.add('done');
+        b.textContent = 'Reordered ✓';
       });
     });
 
@@ -1141,8 +1908,8 @@
   })();
 
   /* =========================================================
-     DEMO 2 — WORKFLOW DASHBOARD
-     KPI count-up on scroll into view + clickable feed pills.
+     DEMO 2 — WORKFLOW (expanded)
+     KPI count-up, live pings, sub-tab with parts-ID flow.
      ========================================================= */
   (function () {
     var feedData = [
@@ -1160,9 +1927,10 @@
       if (s === 'Approved') return 'approved';
       return '';
     }
-    function renderFeed() {
+    function renderFeed(newTopIdx) {
       feedEl.innerHTML = feedData.map(function (f, i) {
-        return '<div class="wf-item">' +
+        var isNew = (newTopIdx !== undefined && i === 0);
+        return '<div class="wf-item' + (isNew ? ' new' : '') + '">' +
           '<span class="time">' + f.time + '</span>' +
           '<span class="desc"><span class="part">' + f.part + '</span>' + f.desc + '</span>' +
           '<button class="wf-pill ' + statusClass(f.status) + '" data-idx="' + i + '">' + f.status + '</button>' +
@@ -1174,27 +1942,62 @@
           var cur = statusOrder.indexOf(feedData[idx].status);
           feedData[idx].status = statusOrder[(cur + 1) % statusOrder.length];
           renderFeed();
+          // bump "quotes awaiting review" if we transitioned into Review
+          if (feedData[idx].status === 'Review') bumpKpi('review', 1);
+          if (feedData[idx].status === 'Approved') bumpKpi('review', -1);
         });
       });
     }
     renderFeed();
 
-    // KPI count-up when scrolled into view
+    // KPI management — count-up on view, then periodic bumps
     var countedUp = false;
+    var kpiValues = { intake: 47, triage: 8, review: 6 };
+    function readSpan(key) { return document.querySelector('#demo-workflow [data-key="' + key + '"]'); }
+    function setKpi(key, val) {
+      var s = readSpan(key);
+      if (!s) return;
+      s.textContent = val;
+      s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump');
+      setTimeout(function () { if (s) s.classList.remove('bump'); }, 900);
+    }
+    function bumpKpi(key, delta) {
+      kpiValues[key] = Math.max(0, kpiValues[key] + delta);
+      setKpi(key, kpiValues[key]);
+    }
     function countUp() {
       if (countedUp) return;
-      var kpiSpans = document.querySelectorAll('#demo-workflow [data-target]');
-      kpiSpans.forEach(function (span) {
-        var target = parseInt(span.getAttribute('data-target'), 10);
+      Object.keys(kpiValues).forEach(function (key) {
+        var s = readSpan(key);
+        if (!s) return;
+        var target = kpiValues[key];
         var current = 0;
         var step = Math.max(1, Math.ceil(target / 30));
         var t = setInterval(function () {
           current += step;
           if (current >= target) { current = target; clearInterval(t); }
-          span.textContent = current;
+          s.textContent = current;
         }, 32);
       });
       countedUp = true;
+      // Periodic "live" bumps (every ~8s, random key)
+      setInterval(function () {
+        if (document.hidden) return;
+        var keys = ['intake', 'review'];
+        var k = keys[Math.floor(Math.random() * keys.length)];
+        var delta = k === 'intake' ? 1 : (Math.random() > 0.5 ? 1 : -1);
+        bumpKpi(k, delta);
+        // push a synthetic feed item when intake bumps up
+        if (k === 'intake' && delta > 0 && !document.hidden) {
+          var now = new Date();
+          var hh = String(now.getHours()).padStart(2, '0');
+          var mm = String(now.getMinutes()).padStart(2, '0');
+          var newEntry = { time: hh + ':' + mm, part: 'INT-' + (220 + Math.floor(Math.random() * 50)), desc: 'Intake received · classification queued', status: 'Pending' };
+          feedData.unshift(newEntry);
+          if (feedData.length > 7) feedData.pop();
+          renderFeed(0);
+        }
+      }, 8000);
     }
     var wfFrame = document.getElementById('demo-workflow');
     if ('IntersectionObserver' in window) {
@@ -1203,18 +2006,88 @@
       }, { threshold: 0.2 });
       io.observe(wfFrame);
     } else { countUp(); }
+
+    // Sub-tabs (triage / partsid)
+    var subtabs = document.querySelectorAll('#demo-workflow .wf-subtab');
+    var panes = document.querySelectorAll('#demo-workflow .wf-pane');
+    subtabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        subtabs.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+        var target = t.getAttribute('data-pane');
+        panes.forEach(function (p) {
+          p.classList.toggle('active', p.getAttribute('data-pane') === target);
+        });
+      });
+    });
+
+    // Parts ID flow
+    var uploadEl = document.getElementById('wf-upload');
+    var thinkingEl = document.getElementById('wf-thinking');
+    var matchesEl = document.getElementById('wf-matches');
+    var steps = document.querySelectorAll('#wf-thinking .step');
+    function runPartsId() {
+      if (uploadEl.classList.contains('processing')) return;
+      uploadEl.classList.add('processing');
+      uploadEl.innerHTML = '<div class="icon">◐</div><div class="prompt"><strong>Processing sample</strong></div><span class="sub">stainless_spindle_photo.jpg · 2.4 MB</span>';
+      matchesEl.classList.remove('show');
+      // reset steps
+      steps.forEach(function (s) { s.classList.remove('active'); s.classList.remove('done'); });
+      thinkingEl.classList.add('show');
+      // advance through steps
+      var seq = [0, 1, 2];
+      var delay = 500;
+      seq.forEach(function (i, order) {
+        setTimeout(function () {
+          if (order > 0) steps[seq[order - 1]].classList.add('done');
+          steps[seq[order]].classList.remove('done');
+          steps[seq[order]].classList.add('active');
+        }, delay * (order + 1));
+      });
+      setTimeout(function () {
+        steps.forEach(function (s) { s.classList.remove('active'); s.classList.add('done'); });
+        matchesEl.classList.add('show');
+      }, delay * (seq.length + 1) + 200);
+    }
+    uploadEl.addEventListener('click', runPartsId);
+    uploadEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); runPartsId(); } });
+
+    // Select match
+    document.querySelectorAll('#demo-workflow .wf-match .sel').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('#demo-workflow .wf-match .sel').forEach(function (x) { x.classList.remove('picked'); x.textContent = 'Select'; });
+        b.classList.add('picked'); b.textContent = 'Selected ✓';
+      });
+    });
   })();
 
   /* =========================================================
-     DEMO 3 — SUPPLIER SCORECARD
-     Animated bars on-view, row expand, column re-sort.
+     DEMO 3 — SUPPLY CHAIN (expanded)
+     Adds: Performance / Reorder flags / Sourcing decisions tabs.
+     Keeps sortable scorecard, expand for landed-cost detail.
      ========================================================= */
   (function () {
     var suppliers = [
-      { name: 'Hensall Metals', region: 'Ontario · CA', otd: 96, qual: 98, price: 2, status: 'good', note: 'Anchor supplier on 304/316. Quality above spec. Recent price discipline through currency swings.', action: 'Maintain 60% allocation. Pre-negotiate Q4 renewal.' },
-      { name: 'Chennai Precision', region: 'Tamil Nadu · IN', otd: 92, qual: 95, price: 5, status: 'good', note: 'In-house to Maple. Consistent delivery, tight quality. Preferred for complex turned work and multi-op machining.', action: 'Current volume stable. Candidate for additional SKU migration.' },
-      { name: 'Northfield Tool', region: 'Michigan · US', otd: 84, qual: 91, price: 14, status: 'watch', note: 'Price drift +14% over six months. On-time weakening on repeat orders. Alternate quoted at −9%.', action: 'Commercial review scheduled. Backup supplier onboarding 60% complete.' },
-      { name: 'LakeAlloys', region: 'Ohio · US', otd: 68, qual: 88, price: 8, status: 'flag', note: 'On-time at 68% over Q2. Two late shipments caused customer escalation. Quality holding, price acceptable.', action: 'Flag for reallocation. Qualify Hensall Metals as primary for impacted SKUs.' }
+      { name: 'Hensall Metals', region: 'Ontario · CA', otd: 96, qual: 98, price: 2, status: 'good',
+        note: 'Anchor supplier on 304/316. Quality above spec. Recent price discipline through currency swings.',
+        action: 'Maintain 60% allocation. Pre-negotiate Q4 renewal.',
+        landed: [['Unit'], ['$/kg'], ['FOB CAD 4.80'], ['Freight CAD 0.32'], ['Duty 0%'], ['Landed CAD 5.12']]
+      },
+      { name: 'Chennai Precision', region: 'Tamil Nadu · IN', otd: 92, qual: 95, price: 5, status: 'good',
+        note: 'In-house to Maple. Consistent delivery, tight quality. Preferred for complex turned work and multi-op machining.',
+        action: 'Current volume stable. Candidate for additional SKU migration.',
+        landed: [['Unit'], ['$/pc'], ['FOB USD 14.20'], ['Freight USD 1.40'], ['Duty 2.8%'], ['Landed CAD 22.05']]
+      },
+      { name: 'Northfield Tool', region: 'Michigan · US', otd: 84, qual: 91, price: 14, status: 'watch',
+        note: 'Price drift +14% over six months. On-time weakening on repeat orders. Alternate quoted at −9%.',
+        action: 'Commercial review scheduled. Backup supplier onboarding 60% complete.',
+        landed: [['Unit'], ['$/pc'], ['FOB USD 22.60'], ['Freight USD 0.80'], ['Duty 0%'], ['Landed CAD 32.15']]
+      },
+      { name: 'LakeAlloys', region: 'Ohio · US', otd: 68, qual: 88, price: 8, status: 'flag',
+        note: 'On-time at 68% over Q2. Two late shipments caused customer escalation. Quality holding, price acceptable.',
+        action: 'Flag for reallocation. Qualify Hensall Metals as primary for impacted SKUs.',
+        landed: [['Unit'], ['$/pc'], ['FOB USD 31.40'], ['Freight USD 1.10'], ['Duty 0%'], ['Landed CAD 44.70']]
+      }
     ];
     var listEl = document.getElementById('sc-list');
     var expandedIdx = -1;
@@ -1228,19 +2101,26 @@
     function barClass(kind, val) {
       if (kind === 'otd') { if (val >= 90) return ''; if (val >= 80) return 'warn'; return 'bad'; }
       if (kind === 'qual') { if (val >= 95) return ''; if (val >= 90) return 'warn'; return 'bad'; }
-      // price drift: lower is better
       if (val <= 5) return ''; if (val <= 10) return 'warn'; return 'bad';
     }
 
     function render() {
-      // Sort copy
       var sorted = suppliers.slice().sort(function (a, b) {
-        if (sortKey === 'price') return a[sortKey] - b[sortKey]; // lower drift first
+        if (sortKey === 'price') return a[sortKey] - b[sortKey];
         return b[sortKey] - a[sortKey];
       });
-      listEl.innerHTML = sorted.map(function (s, i) {
+      listEl.innerHTML = sorted.map(function (s) {
         var origIdx = suppliers.indexOf(s);
         var expanded = expandedIdx === origIdx;
+        var landedHtml = '';
+        if (s.landed) {
+          landedHtml = '<div class="sc-landed">' +
+            '<span>FOB ' + s.landed[2][0].replace(/^FOB /, '') + '</span>' +
+            '<span>Freight ' + s.landed[3][0].replace(/^Freight /, '') + '</span>' +
+            '<span>Duty ' + s.landed[4][0].replace(/^Duty /, '') + '</span>' +
+            '<span>Landed ' + s.landed[5][0].replace(/^Landed /, '') + '</span>' +
+          '</div>';
+        }
         return '<div class="sc-row' + (expanded ? ' expanded' : '') + '" data-idx="' + origIdx + '">' +
           '<div class="name">' + s.name + '<span class="region">' + s.region + '</span></div>' +
           '<div class="sc-cell-stack"><div class="sc-bar ' + barClass('otd', s.otd) + '"><span data-w="' + s.otd + '"></span></div><span class="val">' + s.otd + '%</span></div>' +
@@ -1254,9 +2134,9 @@
             '<div><div class="label">Recommended action</div><div class="note">' + s.action + '</div></div>' +
             '<div><div class="label">Next review</div><div class="note">Scheduled Q3 · automated refresh</div></div>' +
           '</div>' +
+          landedHtml +
         '</div>';
       }).join('');
-      // expand handlers
       listEl.querySelectorAll('.sc-row').forEach(function (r) {
         r.addEventListener('click', function () {
           var idx = parseInt(r.getAttribute('data-idx'), 10);
@@ -1264,7 +2144,6 @@
           render();
         });
       });
-      // animate bars on next frame
       requestAnimationFrame(function () {
         listEl.querySelectorAll('.sc-bar > span').forEach(function (b) {
           b.style.width = b.getAttribute('data-w') + '%';
@@ -1272,7 +2151,6 @@
       });
     }
 
-    // column sort handlers
     document.querySelectorAll('#demo-supply .sc-head .sortable').forEach(function (h) {
       h.addEventListener('click', function () {
         document.querySelectorAll('#demo-supply .sc-head .sortable').forEach(function (x) { x.classList.remove('sorted'); });
@@ -1283,36 +2161,72 @@
       });
     });
 
-    // render on scroll into view (for first bar animation)
-    var first = true;
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting && first) { first = false; render(); io.disconnect(); }
-        });
-      }, { threshold: 0.2 });
-      io.observe(document.getElementById('demo-supply'));
-    } else { render(); }
-    // also render immediately so content isn't empty before IO fires
-    render();
-  })();
-
-  /* =========================================================
-     DEMO 4 — AUDIT DOCUMENT TABS
-     ========================================================= */
-  (function () {
-    var tabs = document.querySelectorAll('#demo-audit .au-tab');
-    var panes = document.querySelectorAll('#demo-audit .au-pane');
-    tabs.forEach(function (t) {
+    // Sub-tabs
+    var subtabs = document.querySelectorAll('#demo-supply .sc-subtab');
+    var panes = document.querySelectorAll('#demo-supply .sc-pane');
+    subtabs.forEach(function (t) {
       t.addEventListener('click', function () {
-        var target = t.getAttribute('data-tab');
-        tabs.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        subtabs.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
         t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+        var target = t.getAttribute('data-pane');
         panes.forEach(function (p) {
           p.classList.toggle('active', p.getAttribute('data-pane') === target);
         });
       });
     });
+
+    // Flag action buttons
+    document.querySelectorAll('#demo-supply .flag-row .act').forEach(function (b) {
+      b.addEventListener('click', function () {
+        b.classList.add('done');
+        b.textContent = 'Applied ✓';
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      var first = true;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting && first) { first = false; render(); io.disconnect(); } });
+      }, { threshold: 0.2 });
+      io.observe(document.getElementById('demo-supply'));
+    }
+    render();
+  })();
+
+  /* =========================================================
+     DEMO 4 — AUDIT (expanded)
+     Adds TOC progress indicator + page counter animation.
+     ========================================================= */
+  (function () {
+    var tabs = document.querySelectorAll('#demo-audit .au-tab');
+    var panes = document.querySelectorAll('#demo-audit .au-pane');
+    var tocFill = document.getElementById('toc-fill');
+    var tocCounter = document.getElementById('toc-counter');
+    var pageEl = document.getElementById('au-page');
+    var pageRanges = { findings: 'p. 1–2', recommend: 'p. 3–4', watch: 'p. 5', scoping: 'p. 6–7' };
+    var tabNames = { findings: 'Findings', recommend: 'Recommendations', watch: 'Watch list', scoping: 'Scoping notes' };
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        var target = t.getAttribute('data-tab');
+        var idx = parseInt(t.getAttribute('data-idx'), 10);
+        tabs.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+        panes.forEach(function (p) {
+          p.classList.toggle('active', p.getAttribute('data-pane') === target);
+        });
+        if (tocFill) tocFill.style.width = (idx * 25) + '%';
+        if (tocCounter) tocCounter.textContent = 'Section ' + idx + ' of 4';
+        if (pageEl) {
+          pageEl.style.opacity = '0';
+          setTimeout(function () {
+            pageEl.textContent = pageRanges[target] || 'p. 1';
+            pageEl.style.opacity = '1';
+          }, 180);
+        }
+      });
+    });
+    if (pageEl) { pageEl.style.transition = 'opacity 240ms ease'; }
   })();
 </script>
 
