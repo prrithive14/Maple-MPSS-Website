@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;450;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260424-4" />
+  <link rel="stylesheet" href="style.css?v=20260424-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
@@ -27,9 +27,87 @@
        parts-ID upload mock, TOC/page counter.
        ======================================================= -->
   <style>
+    /* ===== Fix 1: Demo intro label (above every demo) =====
+       Clear signal that what follows is interactive, not a screenshot.
+       Uses monospace + oxblood accent to match the site's design system. */
+    .demo-intro {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: #F9F6EF;
+      border-left: 3px solid #6B2737;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1B2A3B;
+    }
+    .demo-intro .tag {
+      color: #6B2737;
+      font-weight: 500;
+    }
+    .demo-intro .sep {
+      color: #B8AE9A;
+    }
+    .demo-intro .hint {
+      color: #6B7684;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      font-size: 11px;
+    }
+    /* Small cursor/hand icon indicating clickability */
+    .demo-intro .cursor-icon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      color: #6B2737;
+    }
+    @media (max-width: 640px) {
+      .demo-intro { flex-wrap: wrap; gap: 0.35rem 0.65rem; }
+      .demo-intro .hint { font-size: 10.5px; width: 100%; }
+    }
+
+    /* ===== Fix 2: Pulse animation on first actionable element =====
+       Gentle oxblood outline that pulses for ~4 seconds after the demo
+       enters the viewport, then fades. Stops on first user interaction.
+       Honors prefers-reduced-motion.
+       The .demo-pulse class marks the element; .is-pulsing is added
+       by JS when the demo scrolls into view, removed on first click. */
+    @keyframes demo-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(107, 39, 55, 0); }
+      50%      { box-shadow: 0 0 0 6px rgba(107, 39, 55, 0.22); }
+    }
+    .demo-pulse {
+      border-radius: 2px;
+      position: relative;
+      z-index: 1;
+    }
+    .demo-pulse.is-pulsing {
+      animation: demo-pulse 1.6s ease-in-out 0s 3;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .demo-pulse.is-pulsing { animation: none; }
+    }
+
+    /* ===== Fix 4: Demo end-note (strengthens existing captions) =====
+       Small italic line that appears just below the existing figure caption,
+       closing the loop: "this was live, your real data would sit here." */
+    .demo-endnote {
+      margin-top: 0.65rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #4A5768;
+      max-width: 62ch;
+    }
+
     /* Shared demo frame */
     .demo-frame {
-      margin-top: 1.75rem;
+      margin-top: 0.75rem;
       width: 100%;
       border: 1px solid #D8D0BF;
       background: #FFFFFF;
@@ -1143,11 +1221,21 @@
         </ul>
 
         <!-- INTERACTIVE CRM DEMO -->
+        <div class="demo-intro" role="note" aria-label="Interactive preview">
+          <span class="cursor-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 2.5v7.3L7 8h4.3L5 2.5zm1-1.8L13.5 8.2a.8.8 0 0 1-.6 1.3H8L5.7 13l-.6.3A.8.8 0 0 1 4 12.6V2a.8.8 0 0 1 2-.3z"/>
+            </svg>
+          </span>
+          <span class="tag">Live preview</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="hint">Click tabs, rows, and the Internal / Customer Portal toggle — everything is interactive.</span>
+        </div>
         <div class="demo-frame" id="demo-crm" role="region" aria-label="Interactive CRM demo">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
             <span class="path" id="crm-path">quote-to-order · active quotes</span>
-            <span class="view-toggle" role="tablist" aria-label="View mode">
+            <span class="view-toggle demo-pulse" role="tablist" aria-label="View mode">
               <button class="active" data-view="internal" role="tab" aria-selected="true">Internal CRM</button>
               <button data-view="portal" role="tab" aria-selected="false">Customer Portal</button>
             </span>
@@ -1215,6 +1303,7 @@
           </div>
         </div>
         <span class="block-image-caption">Fig. B1 — Quote-to-order CRM · toggle Internal / Customer Portal at top right · click a row, switch revision, approve</span>
+        <p class="demo-endnote">This is a working example — every tab, button, and row responded to you. In production, it sits on your quote and customer data.</p>
       </div>
     </div>
 
@@ -1241,6 +1330,16 @@
         </ul>
 
         <!-- INTERACTIVE WORKFLOW DEMO -->
+        <div class="demo-intro" role="note" aria-label="Interactive preview">
+          <span class="cursor-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 2.5v7.3L7 8h4.3L5 2.5zm1-1.8L13.5 8.2a.8.8 0 0 1-.6 1.3H8L5.7 13l-.6.3A.8.8 0 0 1 4 12.6V2a.8.8 0 0 1 2-.3z"/>
+            </svg>
+          </span>
+          <span class="tag">Live preview</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="hint">Switch between Intake triage and Parts-ID, advance status pills, or upload a part to match.</span>
+        </div>
         <div class="demo-frame" id="demo-workflow" role="region" aria-label="Interactive operations dashboard">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
@@ -1266,7 +1365,7 @@
               </div>
             </div>
 
-            <div class="wf-subtabs" role="tablist">
+            <div class="wf-subtabs demo-pulse" role="tablist">
               <button class="wf-subtab active" data-pane="triage" role="tab" aria-selected="true">Intake triage</button>
               <button class="wf-subtab" data-pane="partsid" role="tab" aria-selected="false">Parts identification</button>
             </div>
@@ -1317,6 +1416,7 @@
           </div>
         </div>
         <span class="block-image-caption">Fig. B2 — Operations dashboard · live KPIs, advance status pills, or switch to parts-ID to match a photo against the catalog</span>
+        <p class="demo-endnote">This was live — KPIs animated, pills advanced, the parts-ID screen matched against a mock catalog. In production, this is your floor.</p>
       </div>
     </div>
 
@@ -1343,13 +1443,23 @@
         </ul>
 
         <!-- INTERACTIVE SUPPLY CHAIN -->
+        <div class="demo-intro" role="note" aria-label="Interactive preview">
+          <span class="cursor-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 2.5v7.3L7 8h4.3L5 2.5zm1-1.8L13.5 8.2a.8.8 0 0 1-.6 1.3H8L5.7 13l-.6.3A.8.8 0 0 1 4 12.6V2a.8.8 0 0 1 2-.3z"/>
+            </svg>
+          </span>
+          <span class="tag">Live preview</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="hint">Switch panes, sort columns, expand rows — the scorecard responds like a real dashboard.</span>
+        </div>
         <div class="demo-frame" id="demo-supply" role="region" aria-label="Supplier scorecard">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
             <span class="path">supply chain · Q2 review</span>
             <span class="right">MPSS · SCM</span>
           </div>
-          <div class="sc-subtabs" role="tablist">
+          <div class="sc-subtabs demo-pulse" role="tablist">
             <button class="sc-subtab active" data-pane="perf" role="tab" aria-selected="true">Performance <span class="cnt">4</span></button>
             <button class="sc-subtab" data-pane="flags" role="tab" aria-selected="false">Reorder flags <span class="cnt">4</span></button>
             <button class="sc-subtab" data-pane="decisions" role="tab" aria-selected="false">Sourcing decisions <span class="cnt">3</span></button>
@@ -1417,6 +1527,7 @@
           </div>
         </div>
         <span class="block-image-caption">Fig. B3 — Supplier scorecard · switch between Performance, Reorder flags, and Sourcing decisions · expand any supplier row for landed-cost detail</span>
+        <p class="demo-endnote">Everything here was live — sorted columns, expanded rows, flag acknowledgements. In production, the rows are your suppliers and the flags are on your POs.</p>
       </div>
     </div>
 
@@ -1444,6 +1555,16 @@
         </ul>
 
         <!-- INTERACTIVE AUDIT DEMO -->
+        <div class="demo-intro" role="note" aria-label="Interactive preview">
+          <span class="cursor-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 2.5v7.3L7 8h4.3L5 2.5zm1-1.8L13.5 8.2a.8.8 0 0 1-.6 1.3H8L5.7 13l-.6.3A.8.8 0 0 1 4 12.6V2a.8.8 0 0 1 2-.3z"/>
+            </svg>
+          </span>
+          <span class="tag">Live preview</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="hint">Click each section — Findings, Recommendations, Watch list, Scoping — to step through a real audit deliverable.</span>
+        </div>
         <div class="demo-frame" id="demo-audit" role="region" aria-label="Audit deliverable preview">
           <div class="demo-topbar">
             <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
@@ -1451,7 +1572,7 @@
             <span class="right">MPSS · AUDIT</span>
           </div>
           <div class="au-layout">
-            <div class="au-side" role="tablist">
+            <div class="au-side demo-pulse" role="tablist">
               <button class="au-tab active" data-tab="findings" data-idx="1" role="tab" aria-selected="true">Findings <span class="tab-count">4</span></button>
               <button class="au-tab" data-tab="recommend" data-idx="2" role="tab" aria-selected="false">Recommendations <span class="tab-count">3</span></button>
               <button class="au-tab" data-tab="watch" data-idx="3" role="tab" aria-selected="false">Watch list <span class="tab-count">2</span></button>
@@ -1571,6 +1692,7 @@
           </div>
         </div>
         <span class="block-image-caption">Fig. B4 — Audit deliverable · each tab advances the document; progress indicator tracks position in the 7-page report</span>
+        <p class="demo-endnote">This was a live walkthrough of a real deliverable's structure. Your actual audit arrives as a written document, not a screen — but this is how it's organized.</p>
 
         <p style="margin-top: 1.75rem;">
           Audits run on a fixed scope and a fixed timeline. A brief
@@ -1721,6 +1843,49 @@
         toggle.setAttribute('aria-expanded', 'false');
       });
     });
+  })();
+
+  /* =========================================================
+     Fix 2 — Demo pulse trigger
+     Adds .is-pulsing to each .demo-pulse element when it scrolls
+     into view, and removes it on first user interaction within
+     that demo (so the cue disappears once the user engages).
+     Falls back gracefully on browsers without IntersectionObserver.
+     ========================================================= */
+  (function () {
+    var targets = document.querySelectorAll('.demo-pulse');
+    if (!targets.length) return;
+
+    function stopPulse(el) {
+      el.classList.remove('is-pulsing');
+    }
+
+    // Remove pulse on first interaction inside the parent demo-frame
+    targets.forEach(function (el) {
+      var demoFrame = el.closest('.demo-frame');
+      var stop = function () { stopPulse(el); };
+      (demoFrame || el).addEventListener('click', stop, { once: true });
+      (demoFrame || el).addEventListener('pointerdown', stop, { once: true });
+    });
+
+    // Trigger pulse when the element scrolls into view (one-shot per element)
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            // Small delay so the user has a moment to register the demo before the cue fires
+            setTimeout(function () {
+              entry.target.classList.add('is-pulsing');
+            }, 400);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      targets.forEach(function (el) { io.observe(el); });
+    } else {
+      // Fallback: just trigger immediately
+      targets.forEach(function (el) { el.classList.add('is-pulsing'); });
+    }
   })();
 
   /* =========================================================
