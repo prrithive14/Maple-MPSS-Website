@@ -21,7 +21,26 @@
 
   --max: 1240px;
   --gutter: clamp(1.25rem, 3vw, 2.5rem);
+
+  /* ===== Per-page tint palette (Level 1 differentiation) =====
+     Subtle secondary surface colors. Each page sets --page-tint on body.
+     Used only on: page-header-meta left border, § numerals background,
+     and content-block top border. Rest of site remains ivory + ink + oxblood. */
+  --tint-home:     #E8D9B8;  /* Warm amber */
+  --tint-sourcing: #D9CFBB;  /* Warm sand */
+  --tint-ai:       #C9D3DC;  /* Cool slate */
+  --tint-about:    #C8D4C5;  /* Muted forest */
+  --tint-contact:  #E4CED2;  /* Soft oxblood rose */
 }
+
+/* Apply the correct tint based on data-page attribute on <body>.
+   Default falls back to ivory-warm so nothing breaks if attribute is absent. */
+body                           { --page-tint: var(--ivory-warm); }
+body[data-page="home"]         { --page-tint: var(--tint-home); }
+body[data-page="sourcing"]     { --page-tint: var(--tint-sourcing); }
+body[data-page="ai"]           { --page-tint: var(--tint-ai); }
+body[data-page="about"]        { --page-tint: var(--tint-about); }
+body[data-page="contact"]      { --page-tint: var(--tint-contact); }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -727,7 +746,9 @@ section { position: relative; }
   display: flex;
   justify-content: space-between;
   padding-bottom: 1rem;
+  padding-left: 0.85rem;
   border-bottom: 1px solid var(--rule);
+  border-left: 3px solid var(--page-tint);
 }
 
 .page-header h1 {
@@ -1097,7 +1118,7 @@ section { position: relative; }
   grid-template-columns: 1fr;
   gap: 2.5rem;
   padding: clamp(3rem, 5vw, 4.5rem) 0;
-  border-top: 1px solid var(--rule);
+  border-top: 2px solid var(--page-tint);
 }
 
 @media (min-width: 900px) {
@@ -1116,8 +1137,11 @@ section { position: relative; }
   letter-spacing: 0.1em;
   color: var(--oxblood);
   font-weight: 500;
-  display: block;
+  display: inline-block;
   margin-bottom: 0.75rem;
+  background: var(--page-tint);
+  padding: 0.28rem 0.55rem;
+  border-radius: 2px;
 }
 
 .content-block .block-head h3 {
