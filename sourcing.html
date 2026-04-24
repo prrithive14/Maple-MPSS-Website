@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;450;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260424-2" />
+  <link rel="stylesheet" href="style.css?v=20260424-3" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
@@ -27,13 +27,13 @@
     .block-image-grid {
       margin-top: 1.75rem;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 1px;
       background: #D8D0BF;
       border: 1px solid #D8D0BF;
     }
     .block-image-grid .grid-cell {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1 / 1;
       overflow: hidden;
       background: #F2EDE1;
       position: relative;
@@ -50,16 +50,19 @@
       top: 0.5rem;
       left: 0.75rem;
       font-family: "IBM Plex Mono", monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #F9F6EF;
       background: rgba(27, 42, 59, 0.72);
-      padding: 0.25rem 0.5rem;
+      padding: 0.2rem 0.45rem;
       border-radius: 2px;
       z-index: 1;
     }
-    @media (max-width: 640px) {
+    @media (max-width: 900px) {
+      .block-image-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
       .block-image-grid { grid-template-columns: 1fr; }
     }
 
