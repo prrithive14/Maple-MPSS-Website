@@ -568,6 +568,91 @@ section { position: relative; }
   }
 }
 
+/* Auto-scrolling parts strip — ambient proof gallery.
+   Matches the editorial design system: thin rules, ivory frame,
+   no loud motion. Pauses on hover, respects reduced-motion. */
+.parts-strip {
+  margin-top: 2.5rem;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--ivory-warm);
+  position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 3%,
+    #000 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 3%,
+    #000 97%,
+    transparent 100%
+  );
+}
+
+.parts-strip-track {
+  display: flex;
+  gap: 1px;
+  width: max-content;
+  animation: parts-scroll 80s linear infinite;
+}
+
+.parts-strip:hover .parts-strip-track {
+  animation-play-state: paused;
+}
+
+.strip-item {
+  flex: 0 0 auto;
+  width: 280px;
+  height: 210px;
+  margin: 0;
+  overflow: hidden;
+  background: var(--ivory);
+  border-right: 1px solid var(--rule);
+}
+
+.strip-item:last-child {
+  border-right: none;
+}
+
+.strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+@keyframes parts-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parts-strip-track {
+    animation: none;
+  }
+  .parts-strip {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .strip-item {
+    width: 200px;
+    height: 150px;
+  }
+  .parts-strip-track {
+    animation-duration: 60s;
+  }
+}
+
 .model-node-image {
   width: 100%;
   aspect-ratio: 1 / 1;
