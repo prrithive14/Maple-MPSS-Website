@@ -14,12 +14,511 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;450;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="stylesheet" href="style.css?v=20260424-3" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
   <link rel="shortcut icon" href="images/favicon.ico" />
-  </head>
+
+  <!-- =======================================================
+       INTERACTIVE DEMO STYLES — inline to guarantee loading
+       All demos share this base. Each demo has a unique ID
+       so styles don't leak. Color palette matches the site.
+       ======================================================= -->
+  <style>
+    /* Shared demo frame */
+    .demo-frame {
+      margin-top: 1.75rem;
+      width: 100%;
+      border: 1px solid #D8D0BF;
+      background: #FFFFFF;
+      overflow: hidden;
+      font-family: "IBM Plex Sans", -apple-system, sans-serif;
+      font-size: 13px;
+      color: #1B2A3B;
+      position: relative;
+    }
+    .demo-frame * { box-sizing: border-box; }
+    .demo-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #F9F6EF;
+      border-bottom: 1px solid #D8D0BF;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+    .demo-topbar .lights { display: flex; gap: 6px; }
+    .demo-topbar .light { width: 8px; height: 8px; border-radius: 50%; background: #D8D0BF; }
+    .demo-topbar .light.green { background: #6B8E6F; }
+    .demo-topbar .path { color: #3A4A5E; letter-spacing: 0.04em; text-transform: none; font-size: 11px; }
+    .demo-topbar .right { color: #6B2737; }
+
+    /* ==== DEMO 1 — CRM ==== */
+    #demo-crm .crm-layout { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 420px; }
+    @media (max-width: 700px) { #demo-crm .crm-layout { grid-template-columns: 1fr; } }
+
+    #demo-crm .crm-left { border-right: 1px solid #E8E2D1; display: flex; flex-direction: column; }
+    #demo-crm .crm-tabs {
+      display: flex;
+      border-bottom: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #demo-crm .crm-tab {
+      flex: 1;
+      padding: 12px 14px;
+      background: none;
+      border: 0;
+      border-right: 1px solid #E8E2D1;
+      cursor: pointer;
+      color: #6B7684;
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      transition: color 180ms, background 180ms;
+    }
+    #demo-crm .crm-tab:last-child { border-right: 0; }
+    #demo-crm .crm-tab:hover { background: #F9F6EF; color: #1B2A3B; }
+    #demo-crm .crm-tab.active { color: #6B2737; box-shadow: inset 0 -2px 0 #6B2737; background: #FFFFFF; }
+    #demo-crm .crm-tab .count {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      background: #E8E2D1;
+      color: #3A4A5E;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+    #demo-crm .crm-tab.active .count { background: #6B2737; color: #F9F6EF; }
+
+    #demo-crm .crm-rows { flex: 1; overflow: hidden; }
+    #demo-crm .crm-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #F2EDE1;
+      cursor: pointer;
+      transition: background 140ms;
+    }
+    #demo-crm .crm-row:hover { background: #F9F6EF; }
+    #demo-crm .crm-row.active { background: #F2EDE1; box-shadow: inset 3px 0 0 #6B2737; }
+    #demo-crm .crm-row .part {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #6B7684;
+      letter-spacing: 0.03em;
+    }
+    #demo-crm .crm-row .title { font-size: 13px; color: #1B2A3B; font-weight: 500; line-height: 1.3; }
+    #demo-crm .crm-row .title .sub { display: block; font-weight: 400; color: #6B7684; font-size: 11.5px; margin-top: 2px; }
+    #demo-crm .crm-row .amount { text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #1B2A3B; white-space: nowrap; }
+    #demo-crm .crm-row .amount .status {
+      display: block;
+      margin-top: 3px;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+
+    #demo-crm .crm-right { padding: 20px 22px; background: #FDFCF8; display: flex; flex-direction: column; gap: 14px; }
+    #demo-crm .crm-detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #E8E2D1;
+    }
+    #demo-crm .crm-detail-head h4 {
+      font-family: "Fraunces", serif;
+      font-size: 17px;
+      font-weight: 450;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    #demo-crm .crm-detail-head .rev {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B2737;
+    }
+    #demo-crm .crm-specs { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 12px; }
+    #demo-crm .crm-specs dt {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+      padding-top: 1px;
+    }
+    #demo-crm .crm-specs dd { color: #3A4A5E; margin: 0; }
+    #demo-crm .crm-drawing {
+      margin-top: 6px;
+      height: 110px;
+      border: 1px dashed #D8D0BF;
+      background:
+        repeating-linear-gradient(45deg, transparent 0, transparent 8px, #F9F6EF 8px, #F9F6EF 9px);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+    #demo-crm .crm-actions { display: flex; gap: 10px; margin-top: auto; padding-top: 10px; }
+    #demo-crm .crm-btn {
+      flex: 1;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      border: 1px solid #1B2A3B;
+      background: transparent;
+      color: #1B2A3B;
+      cursor: pointer;
+      transition: background 160ms, color 160ms;
+    }
+    #demo-crm .crm-btn:hover { background: #1B2A3B; color: #F9F6EF; }
+    #demo-crm .crm-btn.primary { background: #6B2737; color: #F9F6EF; border-color: #6B2737; }
+    #demo-crm .crm-btn.primary:hover { background: #541D2C; }
+    #demo-crm .crm-btn.approved {
+      background: #6B8E6F !important; color: #F9F6EF !important; border-color: #6B8E6F !important;
+      pointer-events: none;
+    }
+
+    /* ==== DEMO 2 — WORKFLOW DASHBOARD ==== */
+    #demo-workflow .wf-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    #demo-workflow .wf-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 700px) { #demo-workflow .wf-kpis { grid-template-columns: 1fr; } }
+    #demo-workflow .wf-kpi {
+      padding: 14px 16px;
+      border: 1px solid #E8E2D1;
+      background: #F9F6EF;
+      transition: border-color 200ms, transform 200ms;
+    }
+    #demo-workflow .wf-kpi:hover { border-color: #6B2737; transform: translateY(-1px); }
+    #demo-workflow .wf-kpi .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B7684;
+      margin-bottom: 6px;
+    }
+    #demo-workflow .wf-kpi .value {
+      font-family: "Fraunces", serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: #1B2A3B;
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+    #demo-workflow .wf-kpi .value .unit { font-size: 13px; color: #6B7684; margin-left: 4px; }
+    #demo-workflow .wf-kpi .delta {
+      margin-top: 4px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: #6B8E6F;
+    }
+    #demo-workflow .wf-kpi .delta.down { color: #6B2737; }
+
+    #demo-workflow .wf-feed-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 2px 2px 8px;
+      border-bottom: 1px solid #E8E2D1;
+    }
+    #demo-workflow .wf-feed-head h5 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      margin: 0;
+      color: #1B2A3B;
+    }
+    #demo-workflow .wf-feed-head .live-dot {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B8E6F;
+    }
+    #demo-workflow .wf-feed-head .live-dot::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: #6B8E6F;
+      animation: wfPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes wfPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    #demo-workflow .wf-feed { display: flex; flex-direction: column; gap: 1px; }
+    #demo-workflow .wf-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 4px;
+      border-bottom: 1px solid #F2EDE1;
+    }
+    #demo-workflow .wf-item .time {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      color: #6B7684;
+    }
+    #demo-workflow .wf-item .desc { font-size: 12.5px; color: #1B2A3B; line-height: 1.35; }
+    #demo-workflow .wf-item .desc .part {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #6B2737;
+      margin-right: 6px;
+    }
+    #demo-workflow .wf-pill {
+      padding: 3px 9px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid #D8D0BF;
+      color: #6B7684;
+      background: #F9F6EF;
+      cursor: pointer;
+      user-select: none;
+      transition: all 160ms;
+      white-space: nowrap;
+    }
+    #demo-workflow .wf-pill:hover { border-color: #1B2A3B; color: #1B2A3B; }
+    #demo-workflow .wf-pill.review { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
+    #demo-workflow .wf-pill.approved { border-color: #6B8E6F; color: #4E6B52; background: #EEF4EF; }
+
+    /* ==== DEMO 3 — SUPPLIER SCORECARD ==== */
+    #demo-supply .sc-body { padding: 0; }
+    #demo-supply .sc-head {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr auto;
+      gap: 12px;
+      padding: 10px 18px;
+      background: #F9F6EF;
+      border-bottom: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+    #demo-supply .sc-head .sortable { cursor: pointer; user-select: none; transition: color 160ms; }
+    #demo-supply .sc-head .sortable:hover { color: #6B2737; }
+    #demo-supply .sc-head .sortable.sorted { color: #6B2737; }
+    #demo-supply .sc-head .sortable.sorted::after { content: " ↓"; }
+    #demo-supply .sc-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr auto;
+      gap: 12px;
+      padding: 12px 18px;
+      align-items: center;
+      border-bottom: 1px solid #F2EDE1;
+      cursor: pointer;
+      transition: background 140ms;
+    }
+    #demo-supply .sc-row:hover { background: #F9F6EF; }
+    #demo-supply .sc-row.expanded { background: #F2EDE1; }
+    #demo-supply .sc-row .name {
+      font-size: 13px; color: #1B2A3B; font-weight: 500;
+    }
+    #demo-supply .sc-row .name .region {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: #6B7684;
+      font-weight: 400;
+      margin-top: 2px;
+      letter-spacing: 0.05em;
+    }
+    #demo-supply .sc-bar {
+      position: relative;
+      height: 6px;
+      background: #E8E2D1;
+      overflow: hidden;
+    }
+    #demo-supply .sc-bar > span {
+      display: block;
+      height: 100%;
+      background: #1B2A3B;
+      width: 0;
+      transition: width 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    #demo-supply .sc-bar.warn > span { background: #C48A3A; }
+    #demo-supply .sc-bar.bad > span { background: #6B2737; }
+    #demo-supply .sc-cell-stack {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    #demo-supply .sc-cell-stack .val {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: #3A4A5E;
+    }
+    #demo-supply .sc-pill {
+      padding: 3px 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid #E8E2D1;
+      color: #6B7684;
+    }
+    #demo-supply .sc-pill.good { border-color: #6B8E6F; color: #4E6B52; background: #EEF4EF; }
+    #demo-supply .sc-pill.watch { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
+    #demo-supply .sc-pill.flag { border-color: #6B2737; color: #6B2737; background: #F7EBED; }
+    #demo-supply .sc-detail {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      background: #FDFCF8;
+      transition: max-height 260ms ease, padding 260ms ease;
+      border-bottom: 1px solid #F2EDE1;
+    }
+    #demo-supply .sc-detail.open {
+      max-height: 180px;
+      padding: 14px 18px 16px;
+    }
+    #demo-supply .sc-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 700px) { #demo-supply .sc-detail-grid { grid-template-columns: 1fr; } }
+    #demo-supply .sc-detail-grid .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B7684;
+      margin-bottom: 4px;
+    }
+    #demo-supply .sc-detail-grid .note { font-size: 12px; color: #3A4A5E; line-height: 1.45; }
+
+    /* ==== DEMO 4 — AUDIT DOCUMENT ==== */
+    #demo-audit .au-layout {
+      display: grid; grid-template-columns: 200px 1fr;
+    }
+    @media (max-width: 700px) { #demo-audit .au-layout { grid-template-columns: 1fr; } }
+    #demo-audit .au-side {
+      border-right: 1px solid #E8E2D1;
+      background: #F9F6EF;
+      padding: 16px 0;
+      display: flex; flex-direction: column;
+    }
+    @media (max-width: 700px) { #demo-audit .au-side { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid #E8E2D1; padding: 0; } }
+    #demo-audit .au-tab {
+      text-align: left;
+      background: none;
+      border: 0;
+      padding: 11px 18px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: color 160ms, background 160ms, border-color 160ms;
+      white-space: nowrap;
+    }
+    #demo-audit .au-tab:hover { color: #1B2A3B; background: rgba(255,255,255,0.5); }
+    #demo-audit .au-tab.active {
+      color: #6B2737;
+      background: #FFFFFF;
+      border-left-color: #6B2737;
+    }
+    @media (max-width: 700px) {
+      #demo-audit .au-tab { border-left: 0; border-bottom: 2px solid transparent; }
+      #demo-audit .au-tab.active { border-bottom-color: #6B2737; border-left: 0; }
+    }
+    #demo-audit .au-tab .tab-count {
+      margin-left: 6px;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: #A7A29A;
+    }
+    #demo-audit .au-tab.active .tab-count { color: #6B2737; }
+
+    #demo-audit .au-main { padding: 22px 26px; }
+    #demo-audit .au-doc-meta {
+      display: flex; justify-content: space-between; gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #E8E2D1;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7684;
+    }
+    #demo-audit .au-doc-meta .client { color: #6B2737; }
+    #demo-audit .au-pane { display: none; padding-top: 14px; }
+    #demo-audit .au-pane.active { display: block; animation: auFade 240ms ease; }
+    @keyframes auFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    #demo-audit .au-item {
+      padding: 12px 2px 14px;
+      border-bottom: 1px solid #F2EDE1;
+      transition: background 140ms;
+      cursor: default;
+    }
+    #demo-audit .au-item:hover { background: #FDFCF8; }
+    #demo-audit .au-item:last-child { border-bottom: 0; }
+    #demo-audit .au-item-head {
+      display: flex; align-items: baseline; gap: 10px;
+      margin-bottom: 4px;
+    }
+    #demo-audit .au-item-head .num {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #A7A29A;
+      min-width: 36px;
+    }
+    #demo-audit .au-item-head h5 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      margin: 0;
+      color: #1B2A3B;
+      flex: 1;
+    }
+    #demo-audit .au-pri {
+      padding: 2px 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+    #demo-audit .au-pri.high { border-color: #6B2737; color: #6B2737; background: #F7EBED; }
+    #demo-audit .au-pri.med { border-color: #C48A3A; color: #9B6825; background: #FBF4E7; }
+    #demo-audit .au-pri.low { border-color: #A7A29A; color: #6B7684; background: #F9F6EF; }
+    #demo-audit .au-item p {
+      margin: 0 0 0 46px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #3A4A5E;
+    }
+
+    /* Motion respect */
+    @media (prefers-reduced-motion: reduce) {
+      #demo-supply .sc-bar > span { transition: none; }
+      #demo-audit .au-pane.active { animation: none; }
+      #demo-workflow .wf-feed-head .live-dot::before { animation: none; }
+    }
+  </style>
+</head>
 <body>
 
 <nav class="nav">
@@ -65,10 +564,8 @@
   </div>
 </header>
 
-<!-- ========== POSITIONING ========== -->
 <section class="section-tight">
   <div class="container">
-
     <div class="content-block">
       <div class="block-head">
         <span class="num">§ 01</span>
@@ -91,11 +588,9 @@
         </p>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ========== FOUR CAPABILITIES ========== -->
 <section class="section">
   <div class="container">
     <div class="section-head">
@@ -104,7 +599,7 @@
       <h2>Four capabilities. The audit is the on-ramp to the other three.</h2>
     </div>
 
-    <!-- CAPABILITY 1: CRM -->
+    <!-- ========== B · 01 CRM ========== -->
     <div class="content-block">
       <div class="block-head">
         <span class="num">B · 01</span>
@@ -123,14 +618,35 @@
           <li>Role-based access — what sales sees, what purchasing sees, what operators see.</li>
           <li>Integration with accounting, shipping, and shop-floor systems so information flows without manual re-keying.</li>
         </ul>
-        <div class="block-image">
-          <img src="images/ai-crm.jpg" alt="Custom CRM deployment — quote-to-order workflow" loading="lazy" />
+
+        <!-- INTERACTIVE CRM DEMO -->
+        <div class="demo-frame" id="demo-crm" role="region" aria-label="Interactive CRM demo">
+          <div class="demo-topbar">
+            <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
+            <span class="path">quote-to-order · active quotes</span>
+            <span class="right">MPSS · CRM</span>
+          </div>
+          <div class="crm-layout">
+            <div class="crm-left">
+              <div class="crm-tabs" role="tablist">
+                <button class="crm-tab active" data-tab="active" role="tab" aria-selected="true">Active <span class="count">4</span></button>
+                <button class="crm-tab" data-tab="pending" role="tab" aria-selected="false">Pending <span class="count">2</span></button>
+                <button class="crm-tab" data-tab="won" role="tab" aria-selected="false">Won <span class="count">7</span></button>
+              </div>
+              <div class="crm-rows" id="crm-rows">
+                <!-- populated by JS -->
+              </div>
+            </div>
+            <div class="crm-right" id="crm-detail">
+              <!-- populated by JS -->
+            </div>
+          </div>
         </div>
-        <span class="block-image-caption">Fig. B1 — Quote-to-order CRM · representative interface</span>
+        <span class="block-image-caption">Fig. B1 — Quote-to-order CRM · click a row to load the quote</span>
       </div>
     </div>
 
-    <!-- CAPABILITY 2: WORKFLOW AUTOMATION -->
+    <!-- ========== B · 02 WORKFLOW ========== -->
     <div class="content-block">
       <div class="block-head">
         <span class="num">B · 02</span>
@@ -151,14 +667,48 @@
           <li>AI parts-identification tools that match a photograph, description, or spec against an existing catalog.</li>
           <li>Workflow automation between CRM, ERP, and shipping carriers — so the same data doesn't get typed in three places.</li>
         </ul>
-        <div class="block-image">
-          <img src="images/ai-workflow.jpg" alt="Workflow automation — operational dashboard" loading="lazy" />
+
+        <!-- INTERACTIVE WORKFLOW DEMO -->
+        <div class="demo-frame" id="demo-workflow" role="region" aria-label="Interactive operations dashboard">
+          <div class="demo-topbar">
+            <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
+            <span class="path">operations · intake dashboard</span>
+            <span class="right">MPSS · OPS</span>
+          </div>
+          <div class="wf-body">
+            <div class="wf-kpis">
+              <div class="wf-kpi">
+                <div class="label">Intake today</div>
+                <div class="value"><span data-target="47">0</span></div>
+                <div class="delta">+12% vs yesterday</div>
+              </div>
+              <div class="wf-kpi">
+                <div class="label">Avg triage time</div>
+                <div class="value"><span data-target="8">0</span><span class="unit">min</span></div>
+                <div class="delta">−3 min vs last week</div>
+              </div>
+              <div class="wf-kpi">
+                <div class="label">Quotes awaiting review</div>
+                <div class="value"><span data-target="6">0</span></div>
+                <div class="delta down">+2 vs yesterday</div>
+              </div>
+            </div>
+            <div>
+              <div class="wf-feed-head">
+                <h5>Live intake feed</h5>
+                <span class="live-dot">Live</span>
+              </div>
+              <div class="wf-feed" id="wf-feed">
+                <!-- populated by JS; click pills to advance status -->
+              </div>
+            </div>
+          </div>
         </div>
-        <span class="block-image-caption">Fig. B2 — Operations dashboard · representative interface</span>
+        <span class="block-image-caption">Fig. B2 — Operations dashboard · click a status pill to advance it</span>
       </div>
     </div>
 
-    <!-- CAPABILITY 3: SUPPLY CHAIN OPTIMISATION -->
+    <!-- ========== B · 03 SUPPLY CHAIN ========== -->
     <div class="content-block">
       <div class="block-head">
         <span class="num">B · 03</span>
@@ -179,14 +729,32 @@
           <li>Landed-cost tracking across suppliers, currencies, and shipping routes.</li>
           <li>Sourcing decision support — where to consolidate, where to dual-source, where to re-shore.</li>
         </ul>
-        <div class="block-image">
-          <img src="images/ai-supplychain.jpg" alt="Supply chain optimisation — supplier performance dashboard" loading="lazy" />
+
+        <!-- INTERACTIVE SUPPLIER SCORECARD -->
+        <div class="demo-frame" id="demo-supply" role="region" aria-label="Supplier scorecard">
+          <div class="demo-topbar">
+            <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
+            <span class="path">supply chain · supplier scorecard · Q2</span>
+            <span class="right">MPSS · SCM</span>
+          </div>
+          <div class="sc-body">
+            <div class="sc-head">
+              <span>Supplier</span>
+              <span class="sortable sorted" data-sort="otd">On-time</span>
+              <span class="sortable" data-sort="qual">Quality</span>
+              <span class="sortable" data-sort="price">Price drift</span>
+              <span>Status</span>
+            </div>
+            <div id="sc-list">
+              <!-- populated by JS -->
+            </div>
+          </div>
         </div>
-        <span class="block-image-caption">Fig. B3 — Supplier scorecard · representative interface</span>
+        <span class="block-image-caption">Fig. B3 — Supplier scorecard · click a row to expand, click a column to re-sort</span>
       </div>
     </div>
 
-    <!-- CAPABILITY 4: OPERATIONS AUDIT -->
+    <!-- ========== B · 04 AUDIT ========== -->
     <div class="content-block">
       <div class="block-head">
         <span class="num">B · 04</span>
@@ -208,10 +776,131 @@
           <li>Inventory and reorder behaviour — including cash tied up in parts that don't ship.</li>
           <li>Deliverable: a written document covering findings, ranked recommendations, a watch list, and scoping notes for follow-on work.</li>
         </ul>
-        <div class="block-image">
-          <img src="images/ai-audit.jpg" alt="Operations audit — line walkthrough and findings review" loading="lazy" />
+
+        <!-- INTERACTIVE AUDIT DOCUMENT -->
+        <div class="demo-frame" id="demo-audit" role="region" aria-label="Audit deliverable preview">
+          <div class="demo-topbar">
+            <span class="lights"><span class="light"></span><span class="light"></span><span class="light green"></span></span>
+            <span class="path">audit · deliverable preview</span>
+            <span class="right">MPSS · AUDIT</span>
+          </div>
+          <div class="au-layout">
+            <div class="au-side" role="tablist">
+              <button class="au-tab active" data-tab="findings" role="tab" aria-selected="true">Findings <span class="tab-count">4</span></button>
+              <button class="au-tab" data-tab="recommend" role="tab" aria-selected="false">Recommendations <span class="tab-count">3</span></button>
+              <button class="au-tab" data-tab="watch" role="tab" aria-selected="false">Watch list <span class="tab-count">2</span></button>
+              <button class="au-tab" data-tab="scoping" role="tab" aria-selected="false">Scoping notes</button>
+            </div>
+            <div class="au-main">
+              <div class="au-doc-meta">
+                <span class="client">Client · packaging OEM · Ontario</span>
+                <span>Five-day audit · Apr 2026</span>
+              </div>
+
+              <div class="au-pane active" data-pane="findings">
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">F·01</span>
+                    <h5>Quote cycle time driven by manual drawing look-up</h5>
+                    <span class="au-pri high">High</span>
+                  </div>
+                  <p>Engineers spend an average of 45 minutes per quote locating the current revision of source drawings across two shared drives and an email archive. Sampled over one week, this consumed 11% of engineering capacity.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">F·02</span>
+                    <h5>Safety stock set on gut feel, not demand signal</h5>
+                    <span class="au-pri high">High</span>
+                  </div>
+                  <p>Minimum stock levels on stainless wear parts were last reviewed in 2022. Two SKUs are over-stocked by an estimated 9 months of cover; one is stocked below a single lead-time of cover.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">F·03</span>
+                    <h5>OEM replacement-part premiums not systematically audited</h5>
+                    <span class="au-pri med">Medium</span>
+                  </div>
+                  <p>Five high-volume SKUs are purchased from the original OEM at prices 60–130% above comparable contract machining. No internal process exists to flag these as re-source candidates.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">F·04</span>
+                    <h5>Shipping handoff loses 1–2 days per export order</h5>
+                    <span class="au-pri low">Low</span>
+                  </div>
+                  <p>Commercial invoices are re-keyed from the CRM into the broker's portal. Typos trigger review cycles averaging 1.4 days on cross-border shipments.</p>
+                </div>
+              </div>
+
+              <div class="au-pane" data-pane="recommend">
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">R·01</span>
+                    <h5>Build drawing-revision index tied to CRM part records</h5>
+                    <span class="au-pri high">High</span>
+                  </div>
+                  <p>Payback estimate: recovers ~11% of engineering capacity within 60 days of go-live. Effort: 4–6 weeks.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">R·02</span>
+                    <h5>Reorder logic on stainless wear parts, refreshed quarterly</h5>
+                    <span class="au-pri high">High</span>
+                  </div>
+                  <p>Expected working-capital release on identified SKUs: $180–220K on first pass. Effort: 2–3 weeks.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">R·03</span>
+                    <h5>Monthly OEM premium audit — top 20 SKUs</h5>
+                    <span class="au-pri med">Medium</span>
+                  </div>
+                  <p>Even partial re-sourcing on the top five SKUs projects $90K+ annual cost reduction. Effort: ongoing, 2 hours per month once tooled.</p>
+                </div>
+              </div>
+
+              <div class="au-pane" data-pane="watch">
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">W·01</span>
+                    <h5>Single-source exposure on Alloy 625 bar stock</h5>
+                    <span class="au-pri med">Medium</span>
+                  </div>
+                  <p>Current supplier provides 100% of Alloy 625 inventory. One qualified alternate identified; no commercial relationship yet.</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">W·02</span>
+                    <h5>Operator-dependent tribal knowledge on two legacy SKUs</h5>
+                    <span class="au-pri low">Low</span>
+                  </div>
+                  <p>Setup procedures for two legacy SKUs exist only in one operator's head. Documentation recommended before year-end.</p>
+                </div>
+              </div>
+
+              <div class="au-pane" data-pane="scoping">
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">S·01</span>
+                    <h5>Drawing-revision index — proposed scope</h5>
+                    <span class="au-pri low">Phase 1</span>
+                  </div>
+                  <p>Scope covers: CRM integration, revision-history pull from existing Dropbox archive, role-based access. Excludes: operator-facing shop-floor terminals (phase 2).</p>
+                </div>
+                <div class="au-item">
+                  <div class="au-item-head">
+                    <span class="num">S·02</span>
+                    <h5>Reorder-logic refresh — proposed scope</h5>
+                    <span class="au-pri low">Phase 1</span>
+                  </div>
+                  <p>Scope covers: 42 stainless SKUs, quarterly automated refresh, buyer-facing dashboard. Excludes: plastics and specialty alloys (phase 2).</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <span class="block-image-caption">Fig. B4 — Audit deliverable · representative document</span>
+        <span class="block-image-caption">Fig. B4 — Audit deliverable · click a tab to switch sections</span>
+
         <p style="margin-top: 1.75rem;">
           Audits run on a fixed scope and a fixed timeline. A brief
           discovery call sets the focus — what part of the operation to
@@ -224,10 +913,8 @@
   </div>
 </section>
 
-<!-- ========== HOW TO ENGAGE ========== -->
 <section class="section-tight">
   <div class="container">
-
     <div class="content-block">
       <div class="block-head">
         <span class="num">§ 03</span>
@@ -248,11 +935,9 @@
         </p>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ========== CASE STUDY ========== -->
 <section class="case">
   <div class="case-inner">
     <div>
@@ -284,7 +969,6 @@
   </div>
 </section>
 
-<!-- ========== CLOSING CTA (AI-specific) ========== -->
 <section class="closing">
   <div class="closing-inner">
     <span class="eyebrow">Next Step</span>
@@ -349,6 +1033,7 @@
 </footer>
 
 <script>
+  /* ---------- nav toggle (existing) ---------- */
   (function () {
     var toggle = document.querySelector('.nav-toggle');
     var menu = document.getElementById('nav-links');
@@ -363,6 +1048,269 @@
         menu.classList.remove('open');
         toggle.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
+  /* =========================================================
+     DEMO 1 — CRM
+     ========================================================= */
+  (function () {
+    var quotes = {
+      active: [
+        { id: 'Q-4412', part: 'BMBD-13', title: 'Stainless spindle, 316', sub: 'Qty 40 · Rev C', amount: 'CAD 8,420', status: 'Awaiting approval', customer: 'Packaging OEM · Mississauga', mat: '316 stainless · bar stock', lead: '3 weeks', margin: '34.2%', rev: 'Rev C' },
+        { id: 'Q-4410', part: 'PFD-220', title: 'Polished forging die cavity', sub: 'Qty 2 · Rev A', amount: 'CAD 14,800', status: 'In quote', customer: 'Automotive Tier 2 · Windsor', mat: 'Tool steel · H13', lead: '5 weeks', margin: '28.5%', rev: 'Rev A' },
+        { id: 'Q-4408', part: 'SF-6-304', title: 'Stainless flanges, weld-neck', sub: 'Qty 24 · Rev B', amount: 'CAD 6,120', status: 'Drafting', customer: 'Food processor · Guelph', mat: '304 stainless', lead: '2 weeks', margin: '31.0%', rev: 'Rev B' },
+        { id: 'Q-4405', part: 'CAB-17', title: 'Cast aluminum bracket', sub: 'Qty 120 · Rev A', amount: 'CAD 9,760', status: 'In quote', customer: 'System integrator · Hamilton', mat: 'Aluminum A356-T6', lead: '3 weeks', margin: '29.8%', rev: 'Rev A' }
+      ],
+      pending: [
+        { id: 'Q-4398', part: 'TH-PLT-9', title: 'Manifold plate with inserts', sub: 'Qty 6 · Rev D', amount: 'CAD 11,240', status: 'Approval pending', customer: 'Packaging OEM · Burlington', mat: '17-4 PH stainless', lead: '4 weeks', margin: '33.1%', rev: 'Rev D' },
+        { id: 'Q-4391', part: 'HB-88', title: 'Flanged hub assembly', sub: 'Qty 8 · Rev B', amount: 'CAD 7,980', status: 'Approval pending', customer: 'Distributor · Toronto', mat: 'Cast iron + machined', lead: '4 weeks', margin: '30.4%', rev: 'Rev B' }
+      ],
+      won: [
+        { id: 'Q-4377', part: 'BMBD-13', title: 'Stainless spindle (repeat)', sub: 'Qty 60 · Rev C', amount: 'CAD 12,480', status: 'Won · in production', customer: 'Packaging OEM · Mississauga', mat: '316 stainless', lead: '3 weeks', margin: '34.2%', rev: 'Rev C' }
+      ]
+    };
+    var rowsEl = document.getElementById('crm-rows');
+    var detailEl = document.getElementById('crm-detail');
+    var currentTab = 'active';
+    var selectedIdx = 0;
+
+    function renderRows() {
+      var list = quotes[currentTab];
+      rowsEl.innerHTML = list.map(function (q, i) {
+        return '<div class="crm-row' + (i === selectedIdx ? ' active' : '') + '" data-idx="' + i + '">' +
+          '<div class="part">' + q.id + '</div>' +
+          '<div class="title">' + q.title + '<span class="sub">' + q.sub + '</span></div>' +
+          '<div class="amount">' + q.amount + '<span class="status">' + q.status + '</span></div>' +
+          '</div>';
+      }).join('');
+      rowsEl.querySelectorAll('.crm-row').forEach(function (r) {
+        r.addEventListener('click', function () {
+          selectedIdx = parseInt(r.getAttribute('data-idx'), 10);
+          renderRows();
+          renderDetail();
+        });
+      });
+    }
+
+    function renderDetail() {
+      var q = quotes[currentTab][selectedIdx];
+      if (!q) { detailEl.innerHTML = ''; return; }
+      detailEl.innerHTML =
+        '<div class="crm-detail-head">' +
+          '<h4>' + q.title + '</h4>' +
+          '<span class="rev">' + q.rev + '</span>' +
+        '</div>' +
+        '<dl class="crm-specs">' +
+          '<dt>Customer</dt><dd>' + q.customer + '</dd>' +
+          '<dt>Part</dt><dd>' + q.part + '</dd>' +
+          '<dt>Material</dt><dd>' + q.mat + '</dd>' +
+          '<dt>Lead time</dt><dd>' + q.lead + '</dd>' +
+          '<dt>Margin</dt><dd>' + q.margin + '</dd>' +
+          '<dt>Amount</dt><dd>' + q.amount + '</dd>' +
+        '</dl>' +
+        '<div class="crm-drawing">Drawing · ' + q.part + ' · ' + q.rev + '</div>' +
+        '<div class="crm-actions">' +
+          '<button class="crm-btn">Request revision</button>' +
+          '<button class="crm-btn primary" id="crm-approve">Approve</button>' +
+        '</div>';
+      var approveBtn = document.getElementById('crm-approve');
+      if (approveBtn) {
+        approveBtn.addEventListener('click', function () {
+          approveBtn.classList.add('approved');
+          approveBtn.textContent = 'Approved ✓';
+        });
+      }
+    }
+
+    document.querySelectorAll('#demo-crm .crm-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('#demo-crm .crm-tab').forEach(function (x) {
+          x.classList.remove('active'); x.setAttribute('aria-selected', 'false');
+        });
+        t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+        currentTab = t.getAttribute('data-tab');
+        selectedIdx = 0;
+        renderRows(); renderDetail();
+      });
+    });
+
+    renderRows();
+    renderDetail();
+  })();
+
+  /* =========================================================
+     DEMO 2 — WORKFLOW DASHBOARD
+     KPI count-up on scroll into view + clickable feed pills.
+     ========================================================= */
+  (function () {
+    var feedData = [
+      { time: '09:42', part: 'Q-4412', desc: 'BMBD-13 quote drafted — awaiting margin review', status: 'Review' },
+      { time: '09:38', part: 'INT-220', desc: 'Intake classified · packaging OEM · priority B', status: 'Pending' },
+      { time: '09:31', part: 'Q-4410', desc: 'PFD-220 die cavity — drawing parsed, spec extracted', status: 'Review' },
+      { time: '09:24', part: 'Q-4405', desc: 'CAB-17 bracket quote approved by ops lead', status: 'Approved' },
+      { time: '09:18', part: 'INT-219', desc: 'New intake · distributor · 17 SKUs', status: 'Pending' }
+    ];
+    var statusOrder = ['Pending', 'Review', 'Approved'];
+    var feedEl = document.getElementById('wf-feed');
+
+    function statusClass(s) {
+      if (s === 'Review') return 'review';
+      if (s === 'Approved') return 'approved';
+      return '';
+    }
+    function renderFeed() {
+      feedEl.innerHTML = feedData.map(function (f, i) {
+        return '<div class="wf-item">' +
+          '<span class="time">' + f.time + '</span>' +
+          '<span class="desc"><span class="part">' + f.part + '</span>' + f.desc + '</span>' +
+          '<button class="wf-pill ' + statusClass(f.status) + '" data-idx="' + i + '">' + f.status + '</button>' +
+        '</div>';
+      }).join('');
+      feedEl.querySelectorAll('.wf-pill').forEach(function (p) {
+        p.addEventListener('click', function () {
+          var idx = parseInt(p.getAttribute('data-idx'), 10);
+          var cur = statusOrder.indexOf(feedData[idx].status);
+          feedData[idx].status = statusOrder[(cur + 1) % statusOrder.length];
+          renderFeed();
+        });
+      });
+    }
+    renderFeed();
+
+    // KPI count-up when scrolled into view
+    var countedUp = false;
+    function countUp() {
+      if (countedUp) return;
+      var kpiSpans = document.querySelectorAll('#demo-workflow [data-target]');
+      kpiSpans.forEach(function (span) {
+        var target = parseInt(span.getAttribute('data-target'), 10);
+        var current = 0;
+        var step = Math.max(1, Math.ceil(target / 30));
+        var t = setInterval(function () {
+          current += step;
+          if (current >= target) { current = target; clearInterval(t); }
+          span.textContent = current;
+        }, 32);
+      });
+      countedUp = true;
+    }
+    var wfFrame = document.getElementById('demo-workflow');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { countUp(); io.disconnect(); } });
+      }, { threshold: 0.2 });
+      io.observe(wfFrame);
+    } else { countUp(); }
+  })();
+
+  /* =========================================================
+     DEMO 3 — SUPPLIER SCORECARD
+     Animated bars on-view, row expand, column re-sort.
+     ========================================================= */
+  (function () {
+    var suppliers = [
+      { name: 'Hensall Metals', region: 'Ontario · CA', otd: 96, qual: 98, price: 2, status: 'good', note: 'Anchor supplier on 304/316. Quality above spec. Recent price discipline through currency swings.', action: 'Maintain 60% allocation. Pre-negotiate Q4 renewal.' },
+      { name: 'Chennai Precision', region: 'Tamil Nadu · IN', otd: 92, qual: 95, price: 5, status: 'good', note: 'In-house to Maple. Consistent delivery, tight quality. Preferred for complex turned work and multi-op machining.', action: 'Current volume stable. Candidate for additional SKU migration.' },
+      { name: 'Northfield Tool', region: 'Michigan · US', otd: 84, qual: 91, price: 14, status: 'watch', note: 'Price drift +14% over six months. On-time weakening on repeat orders. Alternate quoted at −9%.', action: 'Commercial review scheduled. Backup supplier onboarding 60% complete.' },
+      { name: 'LakeAlloys', region: 'Ohio · US', otd: 68, qual: 88, price: 8, status: 'flag', note: 'On-time at 68% over Q2. Two late shipments caused customer escalation. Quality holding, price acceptable.', action: 'Flag for reallocation. Qualify Hensall Metals as primary for impacted SKUs.' }
+    ];
+    var listEl = document.getElementById('sc-list');
+    var expandedIdx = -1;
+    var sortKey = 'otd';
+
+    function statusPill(s) {
+      if (s === 'good') return '<span class="sc-pill good">Good</span>';
+      if (s === 'watch') return '<span class="sc-pill watch">Watch</span>';
+      return '<span class="sc-pill flag">Flag</span>';
+    }
+    function barClass(kind, val) {
+      if (kind === 'otd') { if (val >= 90) return ''; if (val >= 80) return 'warn'; return 'bad'; }
+      if (kind === 'qual') { if (val >= 95) return ''; if (val >= 90) return 'warn'; return 'bad'; }
+      // price drift: lower is better
+      if (val <= 5) return ''; if (val <= 10) return 'warn'; return 'bad';
+    }
+
+    function render() {
+      // Sort copy
+      var sorted = suppliers.slice().sort(function (a, b) {
+        if (sortKey === 'price') return a[sortKey] - b[sortKey]; // lower drift first
+        return b[sortKey] - a[sortKey];
+      });
+      listEl.innerHTML = sorted.map(function (s, i) {
+        var origIdx = suppliers.indexOf(s);
+        var expanded = expandedIdx === origIdx;
+        return '<div class="sc-row' + (expanded ? ' expanded' : '') + '" data-idx="' + origIdx + '">' +
+          '<div class="name">' + s.name + '<span class="region">' + s.region + '</span></div>' +
+          '<div class="sc-cell-stack"><div class="sc-bar ' + barClass('otd', s.otd) + '"><span data-w="' + s.otd + '"></span></div><span class="val">' + s.otd + '%</span></div>' +
+          '<div class="sc-cell-stack"><div class="sc-bar ' + barClass('qual', s.qual) + '"><span data-w="' + s.qual + '"></span></div><span class="val">' + s.qual + '%</span></div>' +
+          '<div class="sc-cell-stack"><div class="sc-bar ' + barClass('price', s.price) + '"><span data-w="' + Math.min(100, s.price * 5) + '"></span></div><span class="val">+' + s.price + '%</span></div>' +
+          statusPill(s.status) +
+        '</div>' +
+        '<div class="sc-detail' + (expanded ? ' open' : '') + '">' +
+          '<div class="sc-detail-grid">' +
+            '<div><div class="label">Status note</div><div class="note">' + s.note + '</div></div>' +
+            '<div><div class="label">Recommended action</div><div class="note">' + s.action + '</div></div>' +
+            '<div><div class="label">Next review</div><div class="note">Scheduled Q3 · automated refresh</div></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      // expand handlers
+      listEl.querySelectorAll('.sc-row').forEach(function (r) {
+        r.addEventListener('click', function () {
+          var idx = parseInt(r.getAttribute('data-idx'), 10);
+          expandedIdx = (expandedIdx === idx) ? -1 : idx;
+          render();
+        });
+      });
+      // animate bars on next frame
+      requestAnimationFrame(function () {
+        listEl.querySelectorAll('.sc-bar > span').forEach(function (b) {
+          b.style.width = b.getAttribute('data-w') + '%';
+        });
+      });
+    }
+
+    // column sort handlers
+    document.querySelectorAll('#demo-supply .sc-head .sortable').forEach(function (h) {
+      h.addEventListener('click', function () {
+        document.querySelectorAll('#demo-supply .sc-head .sortable').forEach(function (x) { x.classList.remove('sorted'); });
+        h.classList.add('sorted');
+        sortKey = h.getAttribute('data-sort');
+        expandedIdx = -1;
+        render();
+      });
+    });
+
+    // render on scroll into view (for first bar animation)
+    var first = true;
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && first) { first = false; render(); io.disconnect(); }
+        });
+      }, { threshold: 0.2 });
+      io.observe(document.getElementById('demo-supply'));
+    } else { render(); }
+    // also render immediately so content isn't empty before IO fires
+    render();
+  })();
+
+  /* =========================================================
+     DEMO 4 — AUDIT DOCUMENT TABS
+     ========================================================= */
+  (function () {
+    var tabs = document.querySelectorAll('#demo-audit .au-tab');
+    var panes = document.querySelectorAll('#demo-audit .au-pane');
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        var target = t.getAttribute('data-tab');
+        tabs.forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+        panes.forEach(function (p) {
+          p.classList.toggle('active', p.getAttribute('data-pane') === target);
+        });
       });
     });
   })();
